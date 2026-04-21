@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>개발원 30th 인터뷰 아카이브</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #ffffff;
+  --bg-off: #f7f3f3;
+  --burg: #8b1a1a;
+  --burg-lt: #b52222;
+  --burg-dk: #5c0f0f;
+  --ink: #0e0e0e;
+  --muted: #4a4040;
+  --faint: #e0d8d8;
+  --serif: 'Noto Serif KR', serif;
+}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: var(--serif); overflow-x: hidden; font-weight: 700; }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 1.25rem 3rem;
+  background: rgba(255,255,255,0.94);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--faint);
+  transition: box-shadow .3s;
+}
+nav.scrolled { box-shadow: 0 2px 24px rgba(0,0,0,0.07); }
+.nav-logo { font-size: 16px; font-weight: 800; letter-spacing: 0.1em; color: var(--ink); line-height: 1.4; }
+.nav-logo .sub { display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; color: var(--muted); margin-top: 4px; text-transform: none; }
+.nav-links { display: flex; gap: 2.5rem; list-style: none; }
+.nav-links a { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color .2s; }
+.nav-links a:hover { color: var(--burg); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 0 3rem 6rem;
+  position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--faint);
+}
+
+/* 배경 데코 — 우측 큰 30 */
+.hero-deco {
+  position: absolute; right: -0.04em; top: 50%;
+  transform: translateY(-50%);
+  font-size: clamp(240px, 32vw, 480px);
+  font-weight: 900; line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--faint);
+  pointer-events: none; user-select: none;
+  letter-spacing: -0.06em;
+  animation: deco-in 1.4s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes deco-in {
+  from { opacity: 0; transform: translateY(-50%) translateX(60px); }
+  to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+}
+
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 1rem;
+  font-size: 16px; letter-spacing: 0.28em; text-transform: uppercase;
+  color: var(--burg); margin-bottom: 2.4rem;
+  width: fit-content;
+  opacity: 0; animation: fade-up .8s .2s cubic-bezier(.16,1,.3,1) forwards;
+}
+.hero-tag-line { width: 42px; height: 2px; background: var(--burg); opacity: 0.85; }
+
+.hero-title {
+  font-size: clamp(72px, 13vw, 160px);
+  font-weight: 900;
+  line-height: 0.96;
+  letter-spacing: -0.055em;
+  margin-bottom: 3rem;
+  position: relative; z-index: 1;
+  opacity: 0; animation: fade-up .9s .35s cubic-bezier(.16,1,.3,1) forwards;
+}
+.hero-title .burg { color: var(--burg); }
+
+
+.hero-bottom {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  position: relative; z-index: 1;
+  opacity: 0; animation: fade-up .8s .55s cubic-bezier(.16,1,.3,1) forwards;
+}
+.hero-desc { font-size: 16px; line-height: 2; color: var(--muted); max-width: 480px; font-weight: 600; }
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 1rem;
+  background: var(--burg); color: #fff;
+  font-family: var(--serif); font-size: 11px;
+  letter-spacing: 0.22em; text-transform: uppercase;
+  padding: 1.1rem 2.75rem; text-decoration: none;
+  border: none; cursor: pointer; flex-shrink: 0;
+  transition: background .25s, gap .25s, transform .2s;
+}
+.hero-cta:hover { background: var(--burg-lt); gap: 1.5rem; transform: translateY(-2px); }
+
+/* ── CARDS ── */
+.cards-section { background: var(--bg-off); padding: 6rem 3rem 7rem; }
+
+.cards-header {
+  max-width: 1140px; margin: 0 auto 4rem;
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-bottom: 1.5rem; border-bottom: 2px solid var(--ink);
+}
+.cards-title { font-size: 26px; font-weight: 900; letter-spacing: -0.02em; }
+.cards-sub { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+
+.cards-grid {
+  max-width: 1140px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.75rem;
+}
+
+/* 카드 */
+.card {
+  background: var(--bg);
+  border: 1px solid var(--faint);
+  padding: 2.5rem 2.25rem 2.25rem;
+  cursor: pointer; position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: transform .4s cubic-bezier(.16,1,.3,1), box-shadow .4s cubic-bezier(.16,1,.3,1), border-color .3s;
+  /* reveal */
+  opacity: 0; transform: translateY(32px);
+}
+.card.visible {
+  animation: card-in .7s cubic-bezier(.16,1,.3,1) forwards;
+}
+@keyframes card-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 상단 버건디 라인 */
+.card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--burg);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .45s cubic-bezier(.16,1,.3,1);
+}
+.card:hover { transform: translateY(-6px); box-shadow: 0 24px 56px rgba(0,0,0,0.1); border-color: transparent; }
+.card:hover::before { transform: scaleX(1); }
+
+/* 카드 번호 */
+.card-num {
+  font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--faint); margin-bottom: 1.75rem; font-weight: 700;
+  transition: color .3s;
+}
+.card:hover .card-num { color: var(--burg); }
+
+/* 역할 */
+.card-role {
+  font-size: 12px; letter-spacing: 0.1em;
+  color: var(--burg); margin-bottom: 0.6rem; font-weight: 700;
+}
+
+/* 이름 — 크게 강조 */
+.card-name-big {
+  font-size: clamp(24px, 2.8vw, 34px);
+  font-weight: 700; line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--ink); margin-bottom: 0.5rem;
+  transition: color .25s;
+}
+.card:hover .card-name-big { color: var(--burg); }
+
+/* 인터뷰 제목 */
+.card-title {
+  font-size: 15px; line-height: 1.6;
+  color: var(--muted); margin-bottom: 1.5rem;
+  font-style: italic;
+}
+
+/* 발췌 */
+.card-excerpt {
+  font-size: 16px; line-height: 1.9; color: var(--muted);
+  flex: 1; margin-bottom: 2rem;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* 읽기 버튼 */
+.card-read {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--burg); font-weight: 700;
+  transition: gap .25s; background: none; border: none;
+  cursor: pointer; font-family: var(--serif); padding: 0;
+}
+.card-read .arrow { display: inline-block; transition: transform .25s; }
+.card:hover .card-read { gap: 0.9rem; }
+.card:hover .card-read .arrow { transform: translateX(4px); }
+
+.card-pending { opacity: 0.28; cursor: default; pointer-events: none; }
+.card-pending::before { display: none; }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--burg-dk); padding: 4rem 3rem;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+}
+.footer-msg { font-size: 24px; font-weight: 800; color: #fff; letter-spacing: -0.015em; margin-bottom: 0.4rem; }
+.footer-sub { font-size: 12px; letter-spacing: 0.05em; color: rgba(255,255,255,0.45); }
+.footer-copy { font-size: 12px; letter-spacing: 0.05em; color: rgba(255,255,255,0.35); text-align: right; line-height: 2; }
+
+/* ── MODAL ── */
+.overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(8,4,4,0.78); z-index: 200;
+  align-items: center; justify-content: center;
+  padding: 2rem; backdrop-filter: blur(8px);
+}
+.overlay.open { display: flex; }
+
+.modal {
+  background: var(--bg); max-width: 680px; width: 100%;
+  max-height: 88vh; overflow-y: auto; position: relative;
+  animation: modal-in .35s cubic-bezier(.16,1,.3,1);
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(28px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.modal-header {
+  background: var(--burg); padding: 2.75rem 3rem 2.25rem; position: relative;
+}
+.modal-role { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.7); margin-bottom: 0.75rem; font-weight: 700; }
+.modal-name-big { font-size: 36px; font-weight: 900; letter-spacing: -0.025em; color: #fff; line-height: 1; margin-bottom: 0.5rem; }
+.modal-title-sub { font-size: 16px; color: rgba(255,255,255,0.75); font-style: italic; margin-bottom: 0.5rem; font-weight: 600; }
+.modal-date { font-size: 13px; color: rgba(255,255,255,0.5); letter-spacing: 0.05em; font-weight: 600; }
+
+.modal-close {
+  position: absolute; top: 1.5rem; right: 1.5rem;
+  background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+  font-family: var(--serif); font-size: 10px; letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.8); padding: 0.4rem 1rem;
+  cursor: pointer; transition: background .2s;
+}
+.modal-close:hover { background: rgba(255,255,255,0.22); }
+
+.modal-body { padding: 2.75rem 3rem 3.5rem; font-size: 17px; line-height: 2.2; color: #555; }
+.modal-body .section-title {
+  font-size: 13px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--burg); margin: 2.5rem 0 1.25rem;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--faint);
+}
+.modal-body .section-title:first-child { margin-top: 0; }
+.modal-body .q {
+  font-weight: 800; color: var(--ink);
+  margin-top: 1.75rem; margin-bottom: 0.4rem; font-size: 17px;
+}
+.modal-body .q::before { content: 'Q. '; color: var(--burg); }
+.modal-body p { margin-bottom: 0.6rem; }
+.modal-body .note {
+  font-size: 12px; color: #999; font-style: italic;
+  margin-top: 0.75rem; padding: 0.85rem 1.25rem;
+  background: var(--bg-off); border-left: 2px solid var(--faint);
+  line-height: 1.8;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* NAV reveal */
+.nav-reveal {
+  opacity: 0; animation: fade-up .6s .1s ease forwards;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  nav { padding: 1rem 1.5rem; }
+  .nav-links { display: none; }
+  .hero { padding: 0 1.5rem 4rem; }
+  .hero-deco { display: none; }
+  .hero-bottom { flex-direction: column; gap: 2rem; align-items: flex-start; }
+  .cards-section { padding: 4rem 1.5rem; }
+  .modal-header { padding: 2rem 1.5rem 1.5rem; }
+  .modal-body { padding: 2rem 1.5rem; }
+  footer { padding: 2.5rem 1.5rem; flex-direction: column; align-items: flex-start; }
+  .footer-copy { text-align: left; }
+}
+
+
+/* ── PREMIUM EFFECTS ── */
+:root {
+  --shadow-soft: 0 18px 50px rgba(25,18,18,0.08);
+  --shadow-strong: 0 30px 90px rgba(15,8,8,0.16);
+  --glow-burg: rgba(139,26,26,0.16);
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(139,26,26,0.045), transparent 28%),
+    radial-gradient(circle at 82% 22%, rgba(139,26,26,0.055), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(139,26,26,0.05), transparent 36%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: var(--scroll-progress, 0%);
+  height: 2px;
+  background: linear-gradient(90deg, var(--burg), #d46a6a 70%, #f1cbcb);
+  box-shadow: 0 0 18px rgba(139,26,26,0.35);
+  pointer-events: none;
+  z-index: 999;
+}
+
+nav {
+  box-shadow: 0 10px 40px rgba(14,14,14,0.02);
+}
+nav::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139,26,26,0.18), transparent);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+nav.scrolled::after { opacity: 1; }
+
+.hero::before,
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hero::before {
+  background:
+    radial-gradient(circle at 76% 42%, rgba(139,26,26,0.11), transparent 22%),
+    linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0) 28%);
+  opacity: .9;
+}
+.hero::after {
+  background:
+    linear-gradient(130deg, transparent 0%, rgba(255,255,255,0.44) 35%, transparent 58%),
+    radial-gradient(circle at 18% 24%, rgba(139,26,26,0.05), transparent 20%);
+  mix-blend-mode: screen;
+  opacity: .8;
+}
+
+.hero-tag,
+.hero-title,
+.hero-bottom,
+.hero-deco {
+  will-change: transform, opacity;
+}
+.hero-title {
+  text-wrap: balance;
+  text-shadow: 0 14px 34px rgba(0,0,0,0.05);
+}
+.hero-title .burg {
+  text-shadow: 0 10px 26px rgba(139,26,26,0.14);
+}
+.hero-desc {
+  text-wrap: pretty;
+}
+.hero-cta {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 16px 28px rgba(139,26,26,0.22);
+}
+.hero-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.28) 45%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform .7s cubic-bezier(.16,1,.3,1);
+}
+.hero-cta:hover::before { transform: translateX(120%); }
+.hero-cta:active { transform: translateY(1px) scale(0.985); }
+
+.cards-section {
+  position: relative;
+}
+.cards-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.45), transparent 16%);
+  pointer-events: none;
+}
+
+.card {
+  isolation: isolate;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95)),
+    radial-gradient(circle at top left, rgba(139,26,26,0.05), transparent 36%);
+  box-shadow: var(--shadow-soft);
+  transform-style: preserve-3d;
+  transition:
+    transform .45s cubic-bezier(.16,1,.3,1),
+    box-shadow .45s cubic-bezier(.16,1,.3,1),
+    border-color .3s ease,
+    background .35s ease;
+}
+.card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background:
+    radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(139,26,26,0.10), transparent 36%),
+    linear-gradient(120deg, transparent 12%, rgba(255,255,255,0.65) 28%, transparent 44%);
+  opacity: 0;
+  transition: opacity .35s ease;
+  z-index: -1;
+}
+.card:hover {
+  transform: translateY(-10px) scale(1.012);
+  box-shadow: var(--shadow-strong);
+}
+.card:hover::after { opacity: 1; }
+.card > * {
+  transform: translateZ(0);
+  transition: transform .35s ease, color .25s ease;
+}
+.card:hover .card-name-big,
+.card:hover .card-title,
+.card:hover .card-excerpt,
+.card:hover .card-read,
+.card:hover .card-role {
+  transform: translateZ(16px);
+}
+.card-read {
+  position: relative;
+}
+.card-read::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 1px;
+  background: currentColor;
+  transition: width .25s ease;
+}
+.card:hover .card-read::after { width: 100%; }
+
+.overlay {
+  opacity: 0;
+  transition: opacity .28s ease;
+}
+.overlay.open {
+  opacity: 1;
+}
+.modal {
+  border: 1px solid rgba(139,26,26,0.08);
+  box-shadow: 0 38px 90px rgba(0,0,0,0.28);
+}
+.modal-header::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.28), transparent);
+}
+.modal-body {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,1), rgba(248,244,244,0.85));
+}
+.modal-body .q {
+  position: relative;
+  padding-left: .2rem;
+}
+.modal-body .q::after {
+  content: '';
+  display: block;
+  width: 34px;
+  height: 1px;
+  margin-top: .55rem;
+  background: linear-gradient(90deg, var(--burg), transparent);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(36px) scale(.985);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(34px) scale(.975);
+    filter: blur(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* ── APPLE-LIKE INTERACTION EFFECTS ── */
+:root{
+  --hero-shift: 0px;
+  --hero-opacity: 1;
+}
+
+.hero {
+  transform: translateZ(0);
+}
+
+.hero::after{
+  background:
+    linear-gradient(130deg, transparent 0%, rgba(255,255,255,0.52) 30%, transparent 58%),
+    radial-gradient(circle at 18% 24%, rgba(139,26,26,0.06), transparent 22%);
+  opacity: calc(.78 * var(--hero-opacity));
+  transition: opacity .2s linear;
+}
+
+.hero-deco{
+  transform: translateY(calc(-50% + var(--hero-shift) * .45));
+  transition: transform .12s linear, opacity .2s linear;
+  opacity: calc(.95 * var(--hero-opacity));
+  filter: drop-shadow(0 18px 36px rgba(0,0,0,0.03));
+}
+
+.hero-tag,
+.hero-title,
+.hero-bottom{
+  transform: translateY(calc(var(--hero-shift) * .12));
+  transition: transform .12s linear, opacity .2s linear;
+}
+
+.hero-title{
+  transform-origin: left bottom;
+}
+
+.hero-title .burg{
+  position: relative;
+}
+
+.hero-title .burg::after{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-0.08em;
+  height:1px;
+  background: linear-gradient(90deg, rgba(139,26,26,.85), transparent 85%);
+  opacity:.45;
+}
+
+.cards-grid{
+  perspective: 1400px;
+}
+
+.card{
+  transform:
+    translateY(32px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    scale(var(--card-scale, 1));
+  will-change: transform, box-shadow;
+}
+
+.card.visible{
+  animation: card-in-apple .8s cubic-bezier(.16,1,.3,1) forwards;
+}
+
+@keyframes card-in-apple{
+  from{
+    opacity:0;
+    transform: translateY(40px) scale(.985);
+    filter: blur(10px);
+  }
+  to{
+    opacity:1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.card::before{
+  height: 2px;
+  background: linear-gradient(90deg, var(--burg), rgba(181,34,34,.45), transparent 85%);
+}
+
+.card::after{
+  background:
+    radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(139,26,26,0.12), transparent 34%),
+    linear-gradient(120deg, transparent 14%, rgba(255,255,255,.78) 29%, transparent 46%);
+  transition: opacity .3s ease, transform .45s cubic-bezier(.16,1,.3,1);
+  transform: translateX(-4%) translateY(-2%);
+}
+
+.card:hover{
+  transform:
+    translateY(-12px)
+    rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg))
+    scale(1.014);
+  box-shadow:
+    0 34px 90px rgba(15,8,8,0.16),
+    0 12px 28px rgba(15,8,8,0.08);
+}
+
+.card:hover .card-name-big,
+.card:hover .card-title,
+.card:hover .card-excerpt,
+.card:hover .card-read,
+.card:hover .card-role,
+.card:hover .card-num{
+  transform: translateZ(18px);
+}
+
+.hero-cta,
+.modal-close,
+.card-read{
+  will-change: transform;
+}
+
+.hero-cta{
+  transition:
+    background .25s,
+    gap .25s,
+    transform .2s,
+    box-shadow .3s ease;
+}
+.hero-cta:hover{
+  box-shadow: 0 18px 34px rgba(139,26,26,0.28);
+}
+.hero-cta .arrow{
+  display:inline-block;
+  transition: transform .28s cubic-bezier(.16,1,.3,1);
+}
+.hero-cta:hover .arrow{
+  transform: translateX(5px);
+}
+
+.overlay{
+  backdrop-filter: blur(0px);
+  transition: opacity .28s ease, backdrop-filter .35s ease;
+}
+.overlay.open{
+  backdrop-filter: blur(10px);
+}
+
+.modal{
+  transform-origin: center center;
+  transition: transform .24s ease, box-shadow .24s ease;
+}
+.overlay.open .modal{
+  animation: modal-in-apple .42s cubic-bezier(.16,1,.3,1);
+}
+@keyframes modal-in-apple{
+  from{
+    opacity:0;
+    transform: translateY(34px) scale(.972);
+    filter: blur(6px);
+  }
+  to{
+    opacity:1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.modal-body{
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139,26,26,.45) transparent;
+}
+
+@media (max-width: 900px){
+  .card:hover{
+    transform: translateY(-8px) scale(1.01);
+  }
+}
+
+
+/* ── READABLE SERIF UPGRADE ── */
+:root{
+  --serif: 'Noto Serif KR', serif;
+  --ink: #181414;
+  --muted: #2e2828;
+  --faint: #e8dddd;
+}
+
+body{
+  font-family: var(--serif);
+  color: var(--ink);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.card{
+  border-radius: 28px;
+  border-color: rgba(139,26,26,0.08);
+}
+
+.card::after{
+  border-radius: 28px;
+}
+
+.card-name-big{
+  line-height: 1.14;
+  letter-spacing: -0.03em;
+  margin-bottom: 0.72rem;
+}
+
+.card-title{
+  font-size: 17px;
+  line-height: 1.55;
+  font-style: italic;
+  font-weight: 500;
+  color: #4b3f3f;
+  margin-bottom: 1rem;
+  position: relative;
+  padding-left: 0.55em;
+}
+
+.card-title::before{
+  content: '“';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--burg);
+}
+
+.card-title::after{
+  content: '”';
+  color: var(--burg);
+  margin-left: 0.06em;
+}
+
+.hero-desc,
+.card-excerpt,
+.modal-body,
+.modal-body p{
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: -0.012em;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+.hero-desc{
+  font-size: 17px;
+  line-height: 1.95;
+}
+
+.card-excerpt{
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.modal{
+  border-radius: 26px;
+  overflow: hidden;
+  max-width: 760px;
+}
+
+.modal-body{
+  font-size: 17px;
+  line-height: 1.95;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.modal-body .q{
+  line-height: 1.65;
+  letter-spacing: -0.02em;
+}
+
+.modal-body .section-title{
+  letter-spacing: 0.12em;
+}
+
+.modal-body .note{
+  border-left-width: 3px;
+  border-radius: 0 12px 12px 0;
+}
+
+@media (max-width: 768px){
+  .hero-tag{
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    gap: 0.75rem;
+    margin-bottom: 1.8rem;
+  }
+  .hero-tag-line{
+    width: 30px;
+    height: 2px;
+  }
+  .card{
+    border-radius: 22px;
+  }
+  .card::after{
+    border-radius: 22px;
+  }
+  .card-title{
+    font-size: 16px;
+  }
+  .card-excerpt,
+  .modal-body{
+    font-size: 15px;
+    line-height: 1.9;
+  }
+  .modal{
+    border-radius: 20px;
+  }
+}
+
+
+/* ── BOOK READER UI ── */
+.overlay{
+  padding: 0;
+  background:
+    radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 28%),
+    rgba(10,7,7,0.82);
+  backdrop-filter: blur(14px);
+}
+
+.overlay.open{
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+.modal{
+  width: min(1180px, calc(100vw - 48px));
+  max-width: 1180px;
+  max-height: calc(100vh - 32px);
+  margin: 16px auto;
+  border-radius: 30px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  background:
+    linear-gradient(180deg, #fdfbfb 0%, #f7f1f1 100%);
+  box-shadow:
+    0 40px 120px rgba(0,0,0,0.28),
+    0 14px 40px rgba(0,0,0,0.16);
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+.modal::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.modal-header{
+  min-height: 100%;
+  padding: 2.3rem 2rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  background:
+    linear-gradient(180deg, rgba(92,15,15,0.98) 0%, rgba(139,26,26,0.97) 100%);
+  border-right: 1px solid rgba(255,255,255,0.12);
+}
+
+.modal-header::after{
+  display: none;
+}
+
+.modal-role{
+  font-size: 12px;
+  line-height: 1.55;
+  letter-spacing: 0.10em;
+  color: rgba(255,255,255,0.70);
+  margin-bottom: 0.25rem;
+}
+
+.modal-name-big{
+  font-size: clamp(34px, 3vw, 46px);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
+  margin-bottom: 0.35rem;
+}
+
+.modal-title-sub{
+  font-size: 18px;
+  line-height: 1.45;
+  color: rgba(255,255,255,0.90);
+  font-style: italic;
+  margin-top: 0;
+  margin-bottom: 0.55rem;
+}
+
+.modal-date{
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(255,255,255,0.62);
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+}
+
+.modal-body{
+  padding: 3rem 3.25rem 3.5rem;
+  overflow-y: auto;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(249,245,245,0.96));
+  font-size: 18px;
+  line-height: 2.02;
+  color: #2f2929;
+  text-align: justify;
+  text-justify: inter-word;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  letter-spacing: -0.013em;
+}
+
+.modal-body p{
+  margin-bottom: 1.1rem;
+}
+
+.modal-body .section-title{
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  margin: 0 0 1.6rem;
+  padding-bottom: 0.9rem;
+}
+
+.modal-body .q{
+  font-size: 20px;
+  line-height: 1.7;
+  margin-top: 2rem;
+  margin-bottom: 0.85rem;
+  letter-spacing: -0.02em;
+}
+
+.modal-body .note{
+  margin-top: 1.1rem;
+  padding: 1rem 1.2rem;
+  font-size: 13px;
+  line-height: 1.9;
+  border-left-width: 3px;
+  border-radius: 0 12px 12px 0;
+  background: rgba(139,26,26,0.04);
+}
+
+.modal-close{
+  top: 18px;
+  right: 18px;
+  z-index: 20;
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+.reader-controls{
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.reader-btn{
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.24);
+  background: rgba(255,255,255,0.10);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.72rem 1rem;
+  font-family: var(--serif);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease;
+}
+
+.reader-btn:hover{
+  background: rgba(255,255,255,0.18);
+  border-color: rgba(255,255,255,0.34);
+  transform: translateY(-1px);
+}
+
+.reader-progress{
+  margin-top: 0.8rem;
+  font-size: 11px;
+  color: rgba(255,255,255,0.60);
+  letter-spacing: 0.10em;
+}
+
+.reader-progress .page-no{
+  color: rgba(255,255,255,0.9);
+}
+
+.card-title{
+  font-style: italic;
+  position: relative;
+  padding-left: 0.5em;
+}
+
+.card-title::before{
+  content: '“';
+  position: absolute;
+  left: 0;
+  color: var(--burg);
+}
+
+.card-title::after{
+  content: '”';
+  color: var(--burg);
+  margin-left: 0.06em;
+}
+
+@media (max-width: 980px){
+  .modal{
+    width: min(100vw - 24px, 1180px);
+    max-height: calc(100vh - 24px);
+    margin: 12px auto;
+    grid-template-columns: 1fr;
+  }
+
+  .modal-header{
+    min-height: auto;
+    padding: 1.6rem 1.5rem 1.2rem;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    gap: 0.7rem;
+  }
+
+  .modal-body{
+    padding: 2rem 1.5rem 2.4rem;
+    font-size: 16px;
+    line-height: 1.92;
+    text-align: left;
+  }
+
+  .modal-body .q{
+    font-size: 18px;
+  }
+
+  .reader-controls{
+    margin-top: 1rem;
+  }
+}
+
+
+/* ── TIGHTER COVER PANEL BALANCE ── */
+.modal-header > p,
+.modal-header > h2{
+  flex: 0 0 auto;
+}
+
+.modal-header > div{
+  flex: 0 0 auto;
+}
+
+@media (min-width: 981px){
+  .modal-header{
+    align-content: center;
+  }
+}
+
+
+/* ── FINAL LUXURY DETAIL PASS ── */
+.card{
+  background: linear-gradient(180deg, #fffdfd 0%, #faf6f6 100%);
+  box-shadow:
+    inset 0 0 0 1px rgba(139,26,26,0.035),
+    0 20px 46px rgba(0,0,0,0.07);
+}
+
+.card:hover{
+  transform: translateY(-8px) scale(1.008);
+  box-shadow:
+    inset 0 0 0 1px rgba(139,26,26,0.05),
+    0 26px 58px rgba(0,0,0,0.10);
+}
+
+.card-num{
+  opacity: 0.45;
+  letter-spacing: 0.18em;
+}
+
+.card-title,
+.modal-title-sub{
+  opacity: 0.94;
+  letter-spacing: -0.01em;
+}
+
+.modal-title-sub::before{
+  content: '“';
+  color: rgba(255,255,255,0.82);
+  margin-right: 0.06em;
+}
+
+.modal-title-sub::after{
+  content: '”';
+  color: rgba(255,255,255,0.82);
+  margin-left: 0.04em;
+}
+
+.modal{
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.06),
+    0 40px 120px rgba(0,0,0,0.28),
+    0 14px 40px rgba(0,0,0,0.16);
+}
+
+.modal-body{
+  max-width: 42em;
+}
+
+.modal-body::-webkit-scrollbar{
+  width: 10px;
+}
+.modal-body::-webkit-scrollbar-track{
+  background: transparent;
+}
+.modal-body::-webkit-scrollbar-thumb{
+  background: rgba(139,26,26,0.18);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.reader-btn{
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05);
+}
+
+.hero-cta{
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.10),
+    0 14px 26px rgba(139,26,26,0.16);
+}
+
+.footer-msg{
+  letter-spacing: -0.02em;
+}
+
+@media (max-width: 980px){
+  .modal-body{
+    max-width: none;
+  }
+}
+
+</style>
+</head>
+<body>
+
+<nav id="nav" class="nav-reveal">
+  <div class="nav-logo">
+    개발원 <span style="color:var(--burg)">30th</span> INTERVIEW ARCHIVE
+    <span class="sub">(사)자원봉사능력개발원 창립 30주년 인터뷰 아카이브 프로젝트</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#archive">전체 인터뷰</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-deco">30</div>
+  <p class="hero-tag"><span class="hero-tag-line"></span>SINCE 1996 – 2026</p>
+  <h1 class="hero-title">
+    기록이 쌓여<br><span class="burg">역사</span>가 된다.
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      (사)자원봉사능력개발원 창립 30주년을 맞아,<br>
+      우리가 걸어온 길을 함께 만들어온<br>
+      이들의 목소리를 담았습니다.<br>
+      이들의 이야기가 미래의 새로운 이정표가 됩니다.
+    </p>
+    <a href="#archive" class="hero-cta">인터뷰 전체 보기 <span class="arrow">→</span></a>
+  </div>
+</section>
+
+<section id="archive" class="cards-section">
+  <div class="cards-header">
+    <h2 class="cards-title">전체 인터뷰</h2>
+    <span class="cards-sub">Interview Archive</span>
+  </div>
+  <div class="cards-grid" id="cardGrid"></div>
+</section>
+
+<footer>
+  <div>
+    <p class="footer-msg">30년의 동행, 감사합니다.</p>
+    <p class="footer-sub">(사)자원봉사능력개발원 창립 30주년 인터뷰 아카이브 프로젝트</p>
+  </div>
+  <div class="footer-copy">
+    © 2026 (사)자원봉사능력개발원
+  </div>
+</footer>
+
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-header">
+      <p class="modal-role" id="m-role"></p>
+      <h2 class="modal-name-big" id="m-name"></h2>
+      <p class="modal-title-sub" id="m-title-sub"></p>
+      <p class="modal-date" id="m-date"></p>
+      <div>
+        <div class="reader-controls">
+          <button class="reader-btn" id="prevInterviewBtn" onclick="showPrevInterview()">← 이전 인터뷰</button>
+          <button class="reader-btn" id="nextInterviewBtn" onclick="showNextInterview()">다음 인터뷰 →</button>
+        </div>
+        <div class="reader-progress"><span class="page-no" id="readerPageNo">01</span> / <span id="readerPageTotal">00</span></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">닫기 ✕</button>
+    </div>
+    <div class="modal-body" id="m-body"></div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+const data = [
+  {
+    num: 'No. 01',
+    role: '초대 사무국장 · 전 법인 원장',
+    title: '새는 반드시 알을 깨고 나온다',
+    name: '한재흥 목사',
+    date: '2026년 4월 4일 · 서면 인터뷰 (라오스 선교 현장)',
+    excerpt: "1985년 단돈 10,000원을 들고 대구로 내려와 쪽방에서 시작했다. 1996년 법인 설립 당시 사무실도 실무자도 없이 채무 청구서만 기다리고 있었다.",
+    body: `<p class="section-title">한재흥 목사 인터뷰: 개발원 30주년 회고</p>
+<p class="q">평생 사역의 길로 '도시빈민 선교'를 선택하신 결정적인 계기와 당시의 심정이 어떠셨나요?</p>
+<p>저는 서울 출신으로, 전통적인 이북 출신의 보수적 기독교 집안에서 자랐습니다. 오류동·면목동·미아리 삼양동 빈민마을에서 성장하며 초등학교를 세 곳이나 전학했어요. 그만큼 당시 산업화에 따른 이주 빈민층이 광범위하게 집중되었고, 계층 간 갈등이 폭발 직전이었죠.</p>
+<p>신학대학에서 민중신학을 독학하고, 기독교 학생운동을 통해 이론과 실천을 함께 공부했습니다. 1985년 8월 30일, 단돈 10,000원을 들고 대구로 내려와 서문시장 골목 양지여인숙 옥탑방(쪽방)에서 대구 생활을 시작했어요.</p>
+<p>침산동 민중교회에서 전도사로 사역하면서, 교회가 빈민 지역에 있어도 오직 교회만을 위한 교회가 일반적이라는 것을 새삼 깨달았습니다. 그래서 전도사 시절 서구 원대시장 입구 허술한 건물 3층에서 민중교회 목회를 시작했어요. 무료 공부방, 무료 책방, 무료 기타 문화교실, 노동상담, 무료 주말 진료실 등을 열었고, 이 시기에 군 제대 후 합류한 윤승걸 본부장이 청년회·공부방·책방을 맡아 정말 행복한 시간이었습니다.</p>
+<p>그렇게 목회와 선교를 병행하던 중 갈등의 시간이 왔습니다. 교회 목회자로서의 자질 부족과 사회선교 지평 확대 욕구가 강하게 충돌했어요. 오랜 갈등과 기도 끝에 1996년, '목회와 사회선교 중 하나라도 제대로 하자'는 결단으로 교회를 사임하고 자원봉사능력개발원에서 새로운 출발을 했습니다.</p>
+<p class="q">척박했던 초기 시절을 버티게 해 준 가장 큰 원동력은 무엇이었습니까?</p>
+<p>1996년 5월 1일 법인이 설립되고 사무국장으로 활동을 시작했는데, 정식 사무실도 실무자도 없고 채무 청구서만 저를 기다리고 있었습니다. 북부정류장 뒤 섬유공단 사무실로 이전했다가 3개월 만에 비워야 했고, 두류동 우방랜드 옆 골목 월세 사무실을 얻어 재개했죠.</p>
+<p>초창기 활동은 경산 청구재활원, 맹인협동조합과의 연계였습니다. '시각장애인의 흰 지팡이 등불'이라는 이름으로 매주 토요일 시각장애인들과 앞산 산행을 함께 했고, 점자명함 갖기 운동, 대구 공공시설 모니터링 등 다양한 동행 봉사를 이어갔어요.</p>
+<p>특히 잊지 못하는 사건은 동구의회에서 자원봉사 예산을 전액 삭감했을 때입니다. 제가 직접 의회를 방문해 동구의회 의장 명함을 찢고, 자원봉사 조례 제정을 요청해 공문으로 확인을 받고 추경으로 예산을 복원했어요. 그 당시 장준배 사무국장이 지지해주지 않았다면 그런 행동을 할 수 없었을 겁니다.</p>
+<p>원동력이 무엇이었냐고 물으셨는데, 물론 신앙이었지만 더 솔직히는 어렸을 때부터 익숙했던 절대빈곤과 상황에 대한 익숙함, 사회운동 경험, 그리고 헤르만 헤세의 '데미안'에서처럼 '새는 반드시 알을 깨고 나온다'는 믿음이었습니다.</p>
+<p class="note">※ 간행물 '제4의 물결' 광고 후원사 중 대구도시가스가 있었으며, 당시 이사 기옥연 사장과의 인연이 현재 박종률 이사장으로 이어지는 장기적 연대로 발전했다.</p>
+<p class="q">매일 30명이 넘는 분들이 절박하게 상담소를 찾았던 시절, 현장 분위기는 어땠으며 쪽방상담소는 어떤 공간이었을까요?</p>
+<p>처음에는 비상근 소장이었습니다. 2001년 2월 24일 개소 당시 사무실이 칠성시장 근처 3층, 노숙자지원센터와 함께 사용하는 열악한 환경이었어요. 얼마 후 상근 소장으로 자리를 옮겼고, 동구자원봉사센터는 허금희 소장이 이어갔습니다.</p>
+<p>새로운 실무자 면접을 쪽방 주민들 속옷을 말리는 빨래터 공간에서 봤는데, 그 자리에서 대구대 사회복지학과를 우수한 성적으로 졸업 예정인 지원자가 바로 현 장민철 소장입니다.</p>
+<p>초기 상담소의 느낌은 이용시설이 아니라 생활시설 같았어요. 주민들이 하루 종일 함께 출근하고 퇴근하는 실무자 같은 느낌이었죠. '아침에 일어났는데 갈 곳도 없고 먹을 것도 없고 오늘 잘 곳도 모르겠다'는 게 우리 아저씨들이었으니까요.</p>
+<p>어느 날 칠성동 쪽방에 불이 났는데, 아저씨들이 불을 끌 생각을 안 하는 거예요. '건져 올 것이 아무것도 없는데 뭐하러 고생하냐'며 팬티 등 속옷 몇 장만 달라고 했습니다. 당시는 주거권을 거론할 형편이 전혀 안 됐어요. 그냥 하루하루 술 마시고 급식 받으며 사는 분들을 품으며, 사회에서 손가락질받지 않고 우선 의식주를 해결하는 것—사람, 장소, 환대가 초기의 최대 사명이었습니다.</p>
+<p>그래서 동구자원봉사센터와 함께 매주 금요일 동대구역 광장에서 급식을 시작했어요. 급식은 밥 제공만이 아니라 자연스럽게 상담·진료·자원봉사자 발굴로 이어졌고, 처음 봉사자로 온 분이 나중에 후원자가 되고 사회복지 전공 후 대학 교수가 되신 분도 있습니다. '사람과 사회를 함께 변화시키는 자원봉사운동'이 바로 여기서 시작됐어요.</p>
+<p class="q">당시에 동구자원봉사센터, 대구쪽방상담소, 북한이주민지원센터가 있었습니다. 이 세 영역을 하나로 어우르게 한 법인의 초기 비전은 무엇이었나요?</p>
+<p>우리는 자원봉사활동을 주 목적으로 하는 사단법인입니다. 사람을 가장 소중하게 여기며, 활동의 중심으로 움직여야 하죠. 대구쪽방상담소는 IMF로 갑작스레 노숙자가 된 분들보다, 오랜 기간 여러 사정으로 쪽방생활을 하다 그마저도 어려워지면 노숙자가 될 수밖에 없는 분들을 위해 태동했습니다. Homeless는 쪽방생활자와 노숙인을 아우르는 개념이며, 이 활동이 부실하면 특정 계층으로 굳어져 계급이 될 수도 있다는 판단이었어요.</p>
+<p>북한이주민센터 설립이 가장 어려웠습니다. 실무자들은 역량 부족을 우려했고, 진보 진영에서는 진영 논리로 몰릴 위험도 있었어요. 하지만 현실로 존재하는 대구의 북한이주민을 외면할 수 없었습니다. 2002년 6월 24일(한국전쟁 전날)에 설립했고, 전국 최초로 대구시 조례로 이어져 지금은 대구 하나센터로 발전했습니다.</p>
+<p>윤승걸 본부장의 합류도 이 시기의 중요한 전환점이었어요. 울산 월드비전에서 안정적으로 일하던 그에게 '급여가 절반도 안 될 수 있다'고 솔직히 말했는데, 바로 이사 와줬습니다. 그분이 없었다면 지금의 개발원은 없었을 겁니다.</p>
+<p class="note">※ 개발원 실무자들의 공통점: 한 번 합류하면 도무지 이직할 생각을 안 하거나, 이직해도 다시 돌아온다. '하늘의 축복'이라고 고백했다.</p>
+<p class="q">'공공기관의 지역사회 참여와 책임'을 강조하셨던 복지 철학은 무엇이었습니까?</p>
+<p class="note">※ 2004년 국보법 폐지 선언, 북한이주민 간첩사건 관련 호소문 발표, 인권 운동과 대구 시민단체와의 연대와 참여, 등 단순한 구호와 복지 차원을 넘어 사회적 연대에도 적극적으로 목소리를 냈다.</p>
+<p>분명한 것은 개발원이 직접 사회적 이슈에 참여한 것이 아니라, 저 개인이 시민단체를 통해 참여했습니다. 자신의 의견을 타인에게 강요하지 않되, 민주적으로 토론하고 주장하는 공론의 현장이 반드시 성숙해야 한다고 생각했어요.</p>
+<p>우리는 개발원 활동을 '촌놈들이 만들어 가는 복지 공동체'로 표현했는데, 여기서 '촌놈'이란 비아냥이 아니라 뚝심과 주체로서의 자존감을 강조하는 말입니다. 자원봉사단체·사회복지기관이라고 해서, 정부 지원을 받는다고 해서 주체로서의 의견과 권리를 침해받을 수는 없습니다.</p>
+<p>혹시 제가 원장으로서 제 의견을 강요하거나 공론화하지 못해 답답하고 억울하셨다면, 이 자리를 빌려 사과드립니다.</p>
+<p class="q">'대구는 정서와 현실적으로 섬이나 마찬가지다'라는 말씀을 남기셨는데, 대구라는 지역의 장벽과 가능성을 어떻게 보셨나요?</p>
+<p class="note">※ 2006년 한 언론사의 인터뷰에서 ‘ 대구는 지리적으로는 내륙에 있는 분지이기는 하나, 정서와 현실적으로는 섬이나 마찬가지다’라는 말을 했다.</p>
+<p>그 인터뷰를 정확하게 기억합니다. 기사화 이후 '왜 대구에 왔으면 적응해야지'라는 비판도 있었지만, 동시에 외지 출신 이주 시민은 물론 토착 대구 시민들도 연락해 '정말 그렇게 느끼냐, 대안을 모색해 보자'고 해왔어요. 동일한 경험을 절실하게 느끼는 분들이 많구나를 확신했습니다.</p>
+<p>반면 대구가 과거에는 전국에서 가장 진보적이고 개혁적인 지역이었다는 것은 역사가 증명하죠. 그렇던 대구가 어떻게 이렇게 획일적으로 퇴보할 수 있을까, 육지에서 수십 킬로 떨어진 섬이 아니라면 이런 모순은 있을 수 없다는 판단이었어요.</p>
+<p>그렇지만 대구의 미래 가능성은 아주 대단하다고 생각합니다. 서울과 비교해도 손색없을 만큼 다양한 시민단체와 복지 공동체가 존재하고 열심히 활동하고 있거든요. 우리 개발원, '촌놈들이 만들어 가는 복지 공동체'가 당연 으뜸입니다. 현장이 있되 현장에 매몰되지 않으며, 시대적 요구에 외면하지 않는 열정이 있기 때문이에요.</p>
+<p class="q">수많은 자원봉사자들과 후원자들이 함께 연대했던 순간들 중에 가장 기억에 남는 순간은 언제입니까?</p>
+<p>가장 어려운 질문이네요. 매 순간이 절실한 기억이지만, 법인 원장으로서 꼽자면 두 가지입니다.</p>
+<p>첫째는 매년 진행했던 법인 연수회입니다. 처음엔 소수 실무자 연수였다가 점차 후원자·자원봉사자까지 함께하는 자리로 확장됐어요. 경남 하동 쌍계사 부근, 경북 안동 길안에서 진행한 연수에는 인의협 의사 선생님들도 대거 참여해 '우리가 과연 누구이고 사명이 무엇인지'를 함께 고민했습니다. '촌놈들이 일구어가는 복지 공동체'라는 가치도 이 연수 과정에서 설정됐어요.</p>
+<p>둘째는 회원·후원자 40명 이상이 함께 연탄 50,000장씩을 싣고 분단된 우리 반쪽과 함께했던 기억입니다. 말로만 듣던 개성공단, 금강산 온정리·장전리 마을을 직접 방문하고 지역 간부들과 만났던 그 경험이 지금도 새록새록 뿌듯합니다. 대구 사람들이 함께 나누는 삶을 공유했다는 점에서 더욱 그렇습니다.</p>
+<p class="q">30주년을 맞은 개발원이 앞으로 새롭게 걸어가야 함에도 절대 잊지 말아야 할 초기 설립 당시의 초심과 핵심 가치는 무엇이라고 생각하시나요?</p>
+<p>두 가지를 말씀드리고 싶습니다. 첫째는 자원봉사운동의 가치입니다. 자원봉사는 '밑 빠진 독에 물 붓기'가 아니에요. 복지에 대한 국가 책임을 강조하는 것은 당연하지만, 자원복지(Voluntarism)라는 가치 접근이 함께 있어야 합니다. 지역사회와의 연대와 참여는 이타주의적 행위가 아니라 결국 우리에게 돌아오는 '긍정적 이기주의'입니다. 정부 보조금을 받더라도 당당하게 비판하고 제안하는 건강한 NPO 자원봉사 시민운동을 해야 할 이유가 여기에 있어요.</p>
+<p>둘째는 삼심일체(三心一體)입니다. 일심(一心)·중심(中心)·열심(熱心). 법인을 반납할까 갈등했던 극한의 고독 속에서 스스로 다지던 마음가짐이었어요. 주위에서는 그만하고 목회로 돌아가라 했지만 특유의 고집으로 버텼고, 그 결과 현 자원봉사능력개발원의 조그마한 마중물이라도 될 수 있었다고 생각합니다.</p>
+<p>30주년을 삼심일체(三心一體)로 함께해 주신 회원님, 후원자님, 임원님, 그리고 우리 실무자님들께 진심으로 감사드립니다. 모두 안강하소서!</p>
+<p class="note">※ 한재흥 목사는 인터뷰 말미에 사단법인 운영 원칙에 대한 소신도 밝혔다. 사단법인 이사회는 재단법인과 달리 실무에 직접 개입할 수 없으며, 총회·회원 중심의 민주적 구조 속에서 집행기관인 실무자 조직을 지원·집중하는 것이 바른 방향임을 강조했다.</p>`
+  },
+  {
+    num: 'No. 02',
+    role: '자문위원 · 안경사',
+    title: '25년을 이어온 안경 봉사',
+    name: '조갑식',
+    date: '2026년 3월 31일',
+    excerpt: "쪽방 주민에게 맞춤 안경을 만들어주는 상시 의뢰 시스템을 전국 최초로 만들었다. \"전국에 대구밖에 없어요.\"",
+    body: `<p class="section-title">조갑식 인터뷰: 쪽방상담소·안경봉사 회고</p>
+<p class="q">개발원·쪽방상담소와 처음 인연을 맺은 게 언제였나요?</p>
+<p>2001년경 대구시로부터 쪽방상담소를 이관받을 때쯤이었어요. 그 무렵 이미 건안(건강한 안경 만들기) 활동을 하면서 쪽방, 자봉과 인연이 됐고 활동이 본격적으로 확장됐죠. 한재흥 소장이 당시 SBS '좋은 생각' 프로그램에 출연하면서 쪽방 문제가 알려지기도 했고, 동성로 갤러리전 연계 행사도 있었어요. 저는 그때 40대였어요.</p>
+<p class="q">건치(건강한 치아 만들기)를 모방해 건안을 만들었다고 하셨는데, 건치 관계자를 아셨나요?</p>
+<p>치과의사 이재영 씨가 있었고, 구청장 김혜봉 씨가 관련 인물이에요. 한재흥 목사님과 어떻게 연결됐는지는 정확히 기억이 안 나요. 다만 한 목사님이 운영 소장 역할을 하고 계셨던 걸로 기억해요. 옛날엔 일기를 썼으니까 어딘가 자료가 남아 있을 거예요.</p>
+<p class="q">중구 한마음 순회 봉사에 참여하게 된 계기가 뭔가요?</p>
+<p>대구시청에서 안경사협회 중구 회장이었던 저한테 연락이 왔어요. 각 교회를 돌며 노인 대상 안경 봉사를 해줄 수 있냐고요. 중구 관내 일이니까 제가 맡겠다고 했죠. 회장 판공비를 따로 쓰지 않고 전액 돋보기 안경 봉사에 다 썼어요.</p>
+<p class="q">골프 대회와 쪽방 안경 기증은 어떻게 연결됐나요?</p>
+<p>안경사들끼리 골프 대회를 열었는데, 제가 상금 100만 원을 내겠다는 조건으로 안경테 공장에 제안을 했어요. '현금 100만 원 스폰서 대신 재고 안경테 100만 원어치를 달라'고요. 수성구청 주관 대회였는데, 그렇게 받은 재고 안경테를 쪽방에 기증했죠. 쪽방에 안경테를 비치해두고, 주민이 테를 가져오면 안경을 맞춰주는 방식으로 시스템을 만들었고 지금까지 이어지고 있어요.</p>
+<p class="q">안경 봉사 시스템의 특징이 뭔가요?</p>
+<p>일회성 봉사가 아니라 상시 의뢰 시스템이에요. 쪽방이나 자봉에서 발행한 의뢰서를 렌즈 회사에 보내면 맞춤 렌즈를 만들어서 저한테 보내주고, 제가 안경을 만들어 드리는 방식이죠. 이런 시스템은 전국에 대구밖에 없어요. 1호 봉투가 넘칠 만큼 처방전(안경 레시피)을 모아뒀어요. 무궁화경 같은 대형 체인점은 무료 안경 사업을 결국 중단했는데, 장사 속 없이 목적에만 충실하니까 우리는 계속할 수 있었던 거예요.</p>
+<p class="q">기억에 남는 아쉬운 사례가 있나요?</p>
+<p>다초점(누진) 렌즈가 비쌌던 시절에, 꼭 필요한 분한테 맞춰드리지 못했던 게 가장 안타까워요. 지금은 국산화로 가격이 많이 낮아져서 제공할 수 있게 됐지만요.</p>
+<p class="q">안경원에서 농구공을 무료로 빌려준다고 하셨는데요?</p>
+<p>21년 전에 지금 자리로 이전해서 오픈했는데 근처에 농구 골대가 있더라고요. 골목에서 방황하던 청소년들을 위해 농구공 무료 대여를 시작했어요. 한 200개 넘게 쓴 것 같아요. 처음엔 공을 안 돌려줘서 분실이 잦았는데, 뭔가를 맡기고 빌려가는 방식으로 바꿨죠. 그 동네 아이들이 다 여기서 빌렸으니까 인근 이마트에서 농구공이 안 팔릴 정도였어요. 지금도 서랍에 바람 넣으면 쓸 수 있는 공이 준비돼 있어요.</p>
+<p class="q">40대 이전부터 사회에 관심이 많으셨던 이유가 있나요?</p>
+<p>5·18 광주 민주화운동 때 친구들이 진압군으로 파견되는 걸 봤어요. 주변에서 '폭도'라고 했는데, 저는 그게 아니라는 걸 이미 알고 있었죠. 그래서 한겨레신문 창간 때 주주로 참여했어요. 대구에서 첫 모임을 열었을 때 제가 제일 나이가 어려서 간사를 맡게 됐고, 서울 인쇄 현장까지 가보기도 했어요. 그런 경험들이 사회의식을 키워준 것 같아요. 1998년 안경사협회 중구 회장으로 있을 때 전교조 교원노조 법제화 지지 서명도 했고요.</p>
+<p class="q">50대에 사회복지학과에 진학하신 계기가 뭔가요?</p>
+<p>자원봉사능력개발원에서 활동하면서 영향을 받았어요. 봉사에 대한 시각과 범위를 학문적으로 넓혀보고 싶었거든요. 가보니 유럽 복지('요람에서 무덤까지'), 한국 복지 역사 같은 것들을 체계적으로 공부할 수 있었어요. 또 학교에서 알게 된 후배—미용학과 박모 씨 등—를 자봉 단체나 수필 단체에 연결해주는 성과도 있었고요.</p>
+<p class="q">건안 활동이 지금은 없어진 건가요?</p>
+<p>어느 시점에 멈췄어요. 안경사들 사이에 사회적 의식이 부족하기도 했고, 대구에서 진보 성향 활동이 잘 안 받아들여지는 분위기도 있었어요. 무엇보다 후배 양성이 안 됐어요. 건치(건강한 치아 만들기)는 치과가 선후배 유대가 강해서 이어지는데, 안경은 그렇지 못했죠.</p>
+<p class="q">초창기부터 지켜보신 기관의 변화, 어떻게 보셨나요?</p>
+<p>잘해왔어요. 직원들이 맡은 역할을 충실히 해줬기 때문에 큰 불상사도 없이 여기까지 온 것 같아요. 저 같은 사이드 사람들이 연결고리 역할을 했는데, 그게 가능했던 건 중심에 있는 직원들이 잘해줬기 때문이에요.</p>
+<p class="q">기관에 바라는 점과 앞으로의 계획은 뭔가요?</p>
+<p>연 1회 후원의 밤 행사를 다른 나라 사례도 참고해서 좀 더 생산적으로 발전시키면 좋겠어요. 서울의 유사 단체나 큰 교회의 좋은 사례도 벤치마킹해보고요. 새로운 아이디어에 계속 도전하는 것, 성과와 무관하게 그게 좋아요. 현재 대통령이 소년공 출신이니 취약계층에 관심이 많을 테니, 정부 지원을 좀 요청해서 재정을 더 확보해보는 것도 방법이에요. 국가 복지가 닿지 못하는 사각지대를 계속 발굴하는 게 이 기관이 할 일이라고 생각해요. 저 개인적으로는 주어진 재정 범위 안에서 요청이 오면 거절하지 않겠다는 원칙을 유지할 거예요.</p>
+<p class="q">25년간 함께하며 가장 기억에 남는 장면이 있다면요?</p>
+<p>봉고버스에 다 같이 타고 반찬 배달 나가면서 안경 봉사도 함께 했던 순간들이요. 신선동 일대 쪽방(여인숙)을 봉고차로 한 바퀴 돌았던 기억이 아직도 남아요. 지금도 서구 비산동 쪽방 주민 50명에게 사업비로 반찬 배달을 한다고 들었는데, 살기 좋아진 세상에도 아직 어두운 곳을 놓치지 않는다는 게 참 좋은 거예요.</p>`
+  },
+  {
+    num: 'No. 03',
+    role: '대구참여연대 창립멤버',
+    title: '시민사회와 함께 걸어온 길',
+    name: '강금수',
+    date: '2026년 3월 31일',
+    excerpt: "1995년 청년광장을 시작으로 대구참여연대를 함께 만들었다. IMF 이후 개발원과 쪽방·노숙인 문제를 함께 대응했다.",
+    body: `<p class="section-title">대구참여연대·개발원 30주년 회고 인터뷰</p>
+<p class="q">언제부터 활동을 시작하셨나요?</p>
+<p>1995년부터 '참여민주사회청년광장(약칭 청년광장)'에서 약 3년 활동했어요. 단체를 더 키우자는 취지로 1998년에 대구참여연대를 설립했고, 처음부터 창립멤버로 함께한 거죠.</p>
+<p class="q">청년광장은 어떤 조직이었나요?</p>
+<p>80년대부터 90년대 초반까지 각 대학에서 학생운동을 했던 사람들이 모인 대구 중심의 연합체였어요. 전문대 출신들도 많이 참여했고요. 당시 표현으로는 '애국적·진보적 사회 진출'을 기치로, 학생운동 졸업 세대들이 사회 개혁을 위해 헌신하자는 뜻으로 청년 단체를 만든 거예요.</p>
+<p class="q">청년광장의 주요 멤버는 어떤 분들이셨나요?</p>
+<p>박근식, 김채원, 김영숙, 윤정화 선생 등이 있었어요. 이분들은 이후 참여연대로 자리를 옮겨서 계속 활동했죠. 지금도 활동 중인 분들이 꽤 있어요.</p>
+<p class="q">어떻게 시민운동을 시작하게 되셨나요?</p>
+<p>계명대 철학과를 다니면서 원래는 목회자 지망생이었어요. 그런데 당시가 마르크스주의, 민족주의 등 진보 이념이 확산되던 시대였고, 5·18의 진실을 알게 되고 6월 항쟁(87학번)을 겪으면서 '사회를 근본적으로 혁명해야 한다'는 생각으로 바뀐 거죠. 철학과 안에 목회자 지망생 중 운동권으로 전환한 케이스가 정말 많았어요.</p>
+<p class="q">2001년에 시청 옆 사무실을 함께 쓰게 된 경위가 어떻게 됩니까?</p>
+<p>2001년에 참여연대가 시청 옆 사무실로 이사했을 때, 개발원이 한 켠을 같이 쓰게 됐어요. 그때 원장이 한재흥 목사님이셨는데, 개발원이 월세를 일부 냈죠. 개인적으로는 한 목사님과 특별한 인연이 없었지만, 우리 멤버들이 오유선 목사님과 인연이 있었고 그분이 한 목사님과 친하셨어요. 계명대 신학과 네트워크—윤승걸 선생 등 진보적 종교인들—를 통해 자연스럽게 연결된 거예요.</p>
+<p class="q">개발원의 87년도 뿌리에 대해 아시는 내용이 있나요?</p>
+<p>세부 사항은 잘 몰라요. 다만 흐름으로 보면, 80년대까지는 전투적 민중운동의 시대였다가 87년 6월 항쟁 이후 사회 개혁적 시민운동과 민관 거버넌스형 공동체 운동으로 분화됐거든요. 개발원 설립이 그 흐름 속 일부였던 것으로 이해해요. 이성록 선생이 초창기 자원봉사센터를 만들었다는 건 알고 있는데, 세부 내용은 김영숙 선생을 만나보는 게 더 정확할 것 같아요.</p>
+<p class="q">IMF 이후 참여연대와 개발원이 함께 한 활동이 있나요?</p>
+<p>말씀하시니까 기억이 나네요. 97년 IMF 이후 실직자와 노숙인 문제를 함께 대응했어요. 달서구에서 실직 저소득층 생계지원 조례를 처음으로 만들 때도 같이 협의했고요. 2001년 노숙인 실태조사를 같이 하다가 쪽방 거주자가 약 천여 명에 달한다는 걸 파악하게 됐고, 그게 쪽방상담소 설립으로 이어진 거죠. 2003년 쪽방 전수조사도 함께했을 거예요. 다만 제가 직접 담당자가 아니었기 때문에, 세부 내용은 당시 담당자였던 김영숙 선생을 만나보시는 게 맞을 것 같아요. 사회복지위원회 소장은 김용원 교수였던 걸로 기억해요.</p>
+<p class="q">참여연대 사회복지위원회(센터)는 왜 없어진 건가요?</p>
+<p>결정적인 이유는 상근 활동가 수가 줄었기 때문이에요. 활동가가 줄다 보니 여러 위원회와 센터를 운영하기가 어려워진 거죠. 실제로 최저임금법을 우리부터 지키자며 적용하기 시작하면서 급여 부담이 늘고, 상근 활동가가 반으로 줄어버렸어요. 그 이후로 참여연대는 평화운동, 앞산터널 반대운동 같은 의제에 집중하게 됐죠.</p>
+<p class="q">2008년 주거권 실현 연대 활동에 대해 기억하시나요?</p>
+<p>당시 주거복지 운동에는 두 축이 있었어요. 쪽방·빈곤 쪽에 무게를 둔 주거운동—최병우·정현태 선배가 중심—이 하나, 그리고 도시화된 아파트 밀집 환경에 맞는 아파트 공동체 운동이 또 하나였어요. 참여연대는 두 축 모두와 연대했어요. 직접 센터나 기구를 운영하지는 않았지만, 해야 할 일이 있으면 같이 했죠.</p>
+<p class="q">반빈곤 네트워크에서 함께한 활동은 어떤 것들이 있었나요?</p>
+<p>초기에는 거의 모든 연대 사업에 참여했어요. 10월 17일 빈곤철폐의 날 행사, 거리에서 돌아가신 노숙인 추모제도 공동으로 진행했죠. 허창호 선생이 주로 주도하셨고, 대구참여연대 명의로 공동 주체에 들어갔어요. 지금은 상근 활동가 수가 줄어서 적극적으로 참여하지 못하고 있는 상황이에요.</p>
+<p class="note">※ 맥락 보충: 인터뷰이는 일부 사업에서 연대의 유연성이나 대중성이 약해지고 경직된 방식으로 흐를 때는 소극적으로 대응하거나 발을 뺀 경우도 있었다고 했어요. 참여연대는 처음부터 '진보성을 잃지 않되 합리적이고 대중적인' 방향을 지향했기 때문에, 너무 강성으로 흐르는 연대와는 결이 맞지 않을 때도 있었다고요.</p>
+<p class="q">지금 참여연대가 주목하는 의제와 개발원과의 연대 가능성은 어떻게 보시나요?</p>
+<p>지금은 '사회권'이라는 넓은 개념 아래, 지방 정부의 정책을 통해 시민의 사회적 권리가 폭넓게 확산되는 방향에 집중하고 있어요. 특히 이주 노동 문제와 플랫폼 노동 문제를 중요하게 다루고 있고, 올해 사업 계획에는 '좋은 조례, 알찬 예산 프로젝트'가 들어가 있어요. 반빈곤 운동 개념의 직접 연대는 현재 우선순위가 높지 않아요. 현장에 밀착한 활동은 특화된 단체에 맡기고, 참여연대는 조례 제정·예산 편성·지방의회 연계 역할에 집중하는 방식이죠.</p>
+<p class="q">지원주택 조례 제정에 함께할 의향이 있으신가요?</p>
+<p>충분히 가능해요. 지방의회 의원들과 미리부터 연구하고 논의해서 조례를 만들고 예산 편성까지 이어지는 프로세스로 협력할 수 있어요. 이주 노동자 전용 공립 기숙사 운용 조례 같은 것도 예로 들 수 있고, 쪽방을 리모델링해서 기숙사로 전환하는 방안도 검토해볼 수 있겠죠.</p>
+<p class="q">현행 노숙인 지원법의 문제점은 무엇인가요?</p>
+<p>2012년에 제정된 노숙인 등 지원법이 대한민국 국적자, 19세 이상으로 지원 대상을 한정하고 있어서 이주 노동자를 지원할 법적 근거가 없어요. 서구 지역 쪽방에 이주 노동자가 많이 거주하고 있는데도 구청 입장에서는 '왜 자국민 대신 이들을 쪽방 주민으로 인정하느냐'고 오히려 되묻는 상황이고요. 부산에서도 이주 노동자의 쪽방 주민 인정 여부 논란이 있고, 19세 미만 연령 제한 문제도 법적으로 개선이 필요한 부분이에요.</p>
+<p class="q">개발원에서 실습하시면서 어떠셨나요?</p>
+<p>생각보다 활동 영역이 넓고 많은 걸 하고 있다는 인상을 받았어요. 그중에서도 쪽방·노숙인 문제를 오랫동안 놓치지 않고 지속하는 게 쉬운 일이 아닌데, 그렇게 해왔다는 게 진심으로 존경스러웠어요. 조직 문화는 분명 다르죠. 개발원은 현장·당사자와 직접 관계하는 방식이고, 참여연대는 기관을 상대로 감시·비판·요구하는 방식이니까요. 결이 다르지만, 현장에서 포착한 문제의식을 제도적으로 풀어보자 할 때는 함께할 수 있는 지점이 많아요.</p>
+<p class="q">개발원을 한 문장으로 정의한다면 뭐라고 하시겠어요?</p>
+<p>각 운동 단체마다 자기 성향과 색깔이 있고, 그게 존중돼야 한다고 생각해요. 변혁적 반빈곤 운동을 하는 단체, 권력을 감시하는 단체, 현장과 공적 영역을 연결하는 개발원 같은 단체—모두 유의미해요. 어느 한쪽이 분절되거나 자기 주장이 너무 강해지면 연대가 안 되거든요. 각자의 특성을 존중하면서 공동의 과제를 함께 풀어갈 유연성과 상호 존중이 핵심이에요. 관 지원을 받는다고 운동성이 없다고 보는 시각은 편협하다고 생각해요. 목적의 공익성, 그리고 무엇보다 활동가의 헌신이 중요하죠.</p>
+<p class="q">30년 지속에 대한 소감 한마디 해주세요.</p>
+<p>특히 대구에서 30년을 운동으로 지속할 수 있다는 것 자체가 존경받아야 해요. 간사로 시작해서 소장·처장으로 성장한 활동가들—정말 수고했다, 격려하고 싶어요.</p>
+<p class="q">앞으로 개인적인 계획이 있으신가요?</p>
+<p>이제 곧 60이 되는데, 현장 시민운동을 잘 마무리하는 게 제 임무라고 생각해요. 앞으로 2년 안에 후배 활동가들에게 안정된 조직을 넘겨주는 것—재정 확충, 체계 정비—에 집중할 계획이고, 회원들과 임원들에게도 그렇게 이미 말해뒀어요. 정년 제도는 따로 없지만, 나이 들면 체력도 떨어지고 후배가 치고 올라와야 조직이 사는 거거든요. '연착륙·선순환'이라고, 안정적인 세대 이행을 잘 해보려고 해요.</p>`
+  },
+  {
+    num: 'No. 04',
+    role: '더케어 대표 · 전 삼성전자 사회공헌센터',
+    title: '혼자 봉사하면 한 명, 기획하면 만 명이 산다',
+    name: '강남규',
+    date: '2026년 4월 3일',
+    excerpt: "\"나는 어릴 때부터 봉사를 위해 태어났다\"고 혼자 써서 냈더니 일주일도 안 돼서 자리를 옮기라는 얘기가 왔어요.",
+    body: `<p class="section-title">강남규 대표 인터뷰: 삼성 사회공헌과 개발원과의 인연</p>
+<p class="q">삼성전자 사회공헌센터에서 일하게 된 계기가 어떻게 되세요?</p>
+<p>부산에서 전자공고를 나와서 삼성전자에 공채로 입사했어요. 처음에는 개발실로 갔다가 군대 다녀온 후 생산과로 전배됐죠. 한 4~5년 있으면서 진로를 고민하던 찰나에 종교적인 이유가 컸어요. 예수님이 가난한 사람들을 위해 살았다는 성경 문구가 인생의 지표가 됐거든요. 그러던 중 삼성이 신경영을 하면서 사회공헌 담당자를 공모로 뽑는다는 공고가 났어요. 아무한테도 얘기 안 하고 혼자 '나는 어릴 때부터 봉사를 위해 태어났다'라고 써서 냈더니 일주일도 안 돼서 자리를 옮기라는 얘기가 왔어요. 그렇게 사회공헌을 시작하게 됐죠.</p>
+<p class="q">삼성 사회공헌에서 쪽방 지원이 어떻게 시작됐나요?</p>
+<p>'작은 나눔 큰 사랑'이라는 시스템으로 세 축을 만들었어요. 첫 번째가 전국 복지시설 지원, 두 번째가 전국 소년소녀가장 월정 후원, 세 번째가 쪽방이었어요. 연탄 나눔, 물품 후원 등 쪽방 지원을 매년 해왔는데, 다 일회성이다 보니 고민이 됐어요. 그러던 차에 장민철 소장님(당시 실장님)하고 같이 영국에 갈 기회가 생겼어요. 삼성이 보내준 연수였는데, 거기서 셸터도 있고 교회에서 자활 공간도 운영하는 걸 보면서 우리나라에서도 이런 걸 한번 만들어보자고 꿈을 꾸기 시작했죠.</p>
+<p class="note">※ 삼성전자 사회공헌의 '작은 나눔 큰 사랑' 시스템은 이후 공동모금회 설립의 시초가 됐다고 강남규 대표는 밝혔다. 대구·경북 지역 쪽방 물품 지원은 삼성 구미 공장에서 담당했으며, 2004~2006년경 쪽방상담소에 동절기 연탄 나눔·물품 후원으로 처음 연결됐다.</p>
+<p class="q">희망드림센터는 어떻게 만들어진 건가요?</p>
+<p>영국에서 보고 온 걸 바탕으로 장민철 소장님하고 컨셉을 같이 짰어요. 쪽방 주민들의 문제는 주거와 일자리, 그리고 의욕 부재라고 봤거든요. 그래서 한 공간에 모아서 교육하고 일하고 자립시키는 구조를 설계했어요. 3층은 숙식 공간, 1층은 사회적협동조합·마을기업으로 일자리, 2층은 사무실. 2년 거주하면서 돈을 모아 LH 주거로 자립시키고, 빈 자리에 다음 사람이 들어오는 선순환 구조였죠.</p>
+<p>그게 실제로 되기 위해서는 삼성의 지원이 필요했는데, 공장장님이 겨울철 봉사 행사로 오셨을 때 작전을 짰어요. 사전에 PT를 준비해서 15분 만에 어필했죠. 잘못하면 쓸데없는 일 벌였다고 욕먹을 수 있는 상황이었는데, 생각보다 '한번 해봐라'가 나왔어요. 그렇게 시작해서 시에서도 좋다고 2호점을 만들겠다고 나설 정도가 됐어요.</p>
+<p class="note">※ 강남규 대표는 희망드림센터 설계 컨셉을 장민철 소장과 함께 만들었다고 회고했다. 오현주 국장은 2014년 법인 간사로 입사했을 때 개소식에 참여한 기억을 언급했다.</p>
+<p class="q">사회공헌을 하면서 장애물도 있었을 것 같은데요.</p>
+<p>처음에는 생색내기 아니냐는 시선이 많았어요. 시민단체들은 '왜 우리한테는 안 해주냐'며 협박도 있었고 국회의원한테 전화도 왔고요. 그런데 저는 큰 그림을 봤어요. 신경영의 가치는 '우리가 이렇게 하면 다른 기업도 따라가게 되고, 우리나라가 바뀐다'는 거였거든요. 실제로 LG가 나왔고, 지금 큰 기업 중에 사회공헌센터 없는 데가 없어요. 그 시초를 우리가 만들었다고 자부해요.</p>
+<p>홍보도 중요하다고 봤어요. 홍보를 해서 한 사람이라도 보고 이런 단체를 만든다면 지역사회가 변화된다는 생각이었죠. 삼성 구미 공장 하나에서 임직원이 10억, 회사에서 10억, 합쳐서 한 해 80~100억을 지역사회를 위해 쓰는데, 아무도 그걸 잘 모른다는 게 안타까워요.</p>
+<p class="q">하다 보면 매너리즘에 빠지기도 하잖아요. 그런 경험이 있었나요?</p>
+<p>있었죠. 뭐 해도 크게 변화도 없고 이게 무슨 의미가 있을까 싶었어요. 중학교 때 장애인 재활시설에 처음 가서 충격을 받고 봉사를 시작했는데, 막상 회사에서는 기획만 하고 운영만 하니까 내 삶이 아닌 것 같았어요. 그때 기도를 많이 했는데, 어느 날 이런 깨달음이 왔어요. '혼자 봉사하면 한 명 돕지만, 머리 잘 써서 기획하면 만 명이 산다.' 기획자가 만 명을 살리는 거예요. 그걸 딱 느끼고 나서 '내가 소중하구나, 더 열심히 해야겠다' 싶어서 매너리즘에서 탈출했어요.</p>
+<p class="q">개발원만의 특징이 뭐라고 생각하세요?</p>
+<p>운동권이라는 느낌이 팍 들어요. 삶을 바친다, 투쟁 이런 느낌이고. 모이신 분들 면면도 보면 다들 허름한데 이야기하다 보면 억수로 깊어요. 허허실실하지만 한 사람 들어가면 더 깊은 게 있는 그런 사람들이 모여 있어요. 전투적인 집단이면서 운동권이기도 하고, 자기 삶을 다 던져내는 사람들이기도 하면서 올곧은 마음을 끝까지 변하지 않고 가져가는, 우리나라에서 몇 안 되는 집단 중 하나라고 생각해요.</p>
+<p>인간미도 넘쳐요. 다른 데서는 그런 걸 못 느꼈어요. 옛날에 서울에 작가들이 등단하는 작가들이 모여 있는 것 같은 느낌? 이 지역을 바꾸기 위해서 모여서 일을 한다는 느낌이요. 그래서 이 모임 자체를 좋아하게 됐죠.</p>
+<p class="note">※ 윤승걸 본부장이 밤 12시에 술 먹고 전화해서 '내가 니 좋아하는 거 알제?'라고 30분씩 이야기했다는 에피소드를 소개하며 웃음을 자아냈다.</p>
+<p class="q">개발원이 30주년을 맞았는데, 한 말씀 해주신다면요?</p>
+<p>개발원은 너무 폐쇄적이에요. 자기들 클라이언트, 자기들 사람, 자기들 협동조합만 아는 거예요. 저는 지역과 상생하고 민관이 협력해서 사회 변혁을 이뤄야 한다고 생각해요. 그러려면 박사, 연구자들이 많이 나와야 해요. 교수님이 말씀하셨는데, 조직 만들어서 수만 명이랑 어디 가서 이야기해봤자 울리는 메아리밖에 안 되는데, 연구자가 돼서 논문 한 편 쓰면 전 세계를 변화시킬 수 있다고요. 그 말이 너무 중요하게 마음에 남아요.</p>
+<p>정치하고도 친하게 지내고, 진정한 모습도 보여주면서 정책적으로 변화시킬 수 있는 전략을 써야 해요. 소년소녀가장이 없어진 건 국민 관심이 생기고 국회의원들이 표를 얻기 위해 움직인 결과예요. 쪽방촌이 왜 아직 없어지지 않았는가에 대해 깊이 생각해볼 필요가 있어요. 같은 출발선에서 시작했지만 결과가 다르잖아요.</p>
+<p class="q">삼성 퇴직 후 더케어를 창업하신 계기는요?</p>
+<p>박사 공부하면서 몸도 안 좋아지고 공황장애도 오고 해서 회사를 그만두려고 했어요. 마침 회사에서 퇴직자들한테 소부장 회사를 주는 프로그램이 있었는데, 저처럼 젊은 사람한테는 안 주는 편이었어요. '제 다음 인생을 살고 싶습니다'라고 억지로 우겨서 받아냈죠. 그렇게 받은 게 청소·방역이었어요. 현재는 삼성전자 구미 공장 내부 청소·방역을 맡으면서 과학관, 동사무소, 학교 등 외부 7~8곳도 운영하고 있어요.</p>
+<p>사회공헌도 계속하고 있어요. 장애인 복지관 후원도 하고, 교육연구소 이사로도 활동하고 있죠. 다 아는 사이니까 모른 척할 수가 없어요.</p>`
+  },
+  {
+    num: 'No. 05',
+    role: '부이사장',
+    title: '투명하게 운영하는데 이렇게 열악하다는 게 오히려 신뢰가 됐어요',
+    name: '권영희',
+    date: '2026년 4월 9일',
+    excerpt: "실습 첫날 쪽방을 처음 접하고 그날 저녁 집에 와서 진짜 많이 울었어요. 우리 대구에 이런 집이 있었다는 게 충격이었거든요.",
+    body: `<p class="section-title">권영희 이사 인터뷰: 기관과의 인연 및 16년 회고</p>
+<p class="q">사회복지 공부는 어떻게 시작하게 되셨나요?</p>
+<p>애가 셋인데, 큰애 청소년기가 너무 힘들어서 뭔가 도움받을 수 있는 공부를 해봐야겠다 싶었어요. 그때 사이버 대학에 청소년 상담과가 있어서 그걸 먼저 했고, 해보니까 도움이 굉장히 많이 됐거든요. 그다음에 시어머니가 결혼 한 5년 후부터 지병이 많아지셔서, 그 부분에도 도움될 수 있는 걸 찾다 보니 사회복지사 공부도 하게 됐어요. 처음 계기가 다 가족이었던 거죠.</p>
+<p class="q">현장 실습을 쪽방상담소로 선택하신 계기가 있었나요?</p>
+<p>모르고 선택했어요. 회식 자리에서 잘 아시는 공무원 분이 추천을 해주셨는데, 본인도 거기서 실습했는데 굉장히 유용했다고 하시더라고요. 가기 전에 '다른 곳하고는 조금 다를 수 있는데, 가면 더 보람될 거다'라는 말씀은 들었었어요. 그분이 나중에 혈액암으로 일찍 돌아가셨는데, 지금도 고마운 분이에요.</p>
+<p class="q">실습 첫날은 어떠셨나요?</p>
+<p>사전 면담을 갔더니 지금 윤승걸 본부장님이 그때 소장님이셨는데, 저를 따로 불러서 '도대체 사회복지를 왜 하려는 거예요?'라고 물으시는 거예요. 굉장히 다그치듯이요. 그래서 어머님이 편찮으시고 해서 관심이 생겼다고 말씀드렸죠.</p>
+<p>실습 담당이 강 국장님이셨는데, 1시간의 여유도 안 주시고 계속 일을 주셨어요. 첫 동행 때 중구 쪽방을 처음 접하면서 세 집 정도 방문했는데, 그날 저녁 집에 와서 진짜 많이 울었어요. 우리 대구에 이런 집이 있었고, 이런 환경에서 살고 계시는 분이 있다는 게 충격이었거든요. 나는 전혀 모르고 이때까지 살고 있었구나 싶어서요. 그러고 나서 뭐든지 열심히 해야겠다, 내가 도움 줄 수 있는 부분이 있으면 주고 싶다는 생각이 들었죠.</p>
+<p class="note">※ 당시 실습 현장은 중구 쪽방 밀집 지역(명신, 세한 인근 오방골 일대). 강 국장님이 첫 동행 때 권영희 이사님이 눈물을 보이셨다는 기억을 지금도 갖고 계신다고 함.</p>
+<p class="q">실습 이후 운영위원으로 합류하게 된 경위는요?</p>
+<p>실습이 거의 끝날 때쯤 윤승걸 소장님이 '여기서 같이 한번 해보는 게 어떻겠냐'고 하셔서 그렇게 참여하게 됐어요. 2010년 말~2011년 초 사이였던 것 같아요. 그 이후로 운영위원, 이사, 지금은 부이사장까지 계속 이어지고 있네요.</p>
+<p class="q">실습 당시 법인에 대한 첫인상은 어떠셨나요?</p>
+<p>굉장히 열악했어요. 근데 제가 감동받았던 게, 당시 언론에서 후원금 투명성 문제가 많이 터지던 시기였거든요. 그런데 이 쪽방상담소에 들어와서 느낀 게, 너무 투명하게 운영하고 있는데도 이렇게 열악하다는 거였어요. 그게 오히려 더 신뢰가 됐죠. 당시 후원자가 100명도 안 됐던 시기였는데도 그 진정성이 느껴졌어요.</p>
+<p class="q">16년 동안 기관 내부의 여러 변화들을 지켜보셨는데, 어떻게 느끼셨나요?</p>
+<p>저는 사실 내부적인 부분을 크게 들여다보지 않으려 해요. 어디든 조직에서는 좋은 일도 나쁜 일도 다 있다고 생각하거든요. 제 본연의 목적은 쪽방상담소에서 어려운 분들을 돕고 싶어서 들어온 거였기 때문에, 그 마음은 변한 적이 없어요. 저는 간섭이 아니라 응원이라고 생각하면서 지켜봐 왔죠.</p>
+<p class="q">16년 중 가장 기억에 남는 순간이 있다면요?</p>
+<p>서구 희망드림센터 개소식이에요. 우리 건물을 가지는 게 희망이었는데, 드디어 우리 손으로 건물을 구입했잖아요. 직원분들이 손 안 닿은 데가 없을 정도로 다 직접 작업을 하셨는데, 그 개소식 때가 정말 가슴이 벅찼어요.</p>
+<p>거의 3억으로 건물을 매입하고 수리까지 다 했는데, 당시엔 엄청 큰 돈이었거든요. 1억 5천만 원 대출도 받고요. 지금 시세로는 한 10억 정도 되지 않을까 싶은데, 정말 대단하다는 생각이 들었어요. 방식이 좀 거칠고 무대뽀일지는 몰라도, 마음먹으면 하는 기관이구나 싶었죠.</p>
+<p class="note">※ 입사 직후 권나영 간사도 2014년 입사 후 두세 달은 술자리, 그 이후엔 오전 8시 출근해서 페인트칠·삽질 등 공사에 투입됐다고 회고. 당시 임신 중이었음에도 함께 현장 작업을 했을 만큼 직원 전체가 십시일반으로 힘을 보탰던 시기.</p>
+<p class="q">법인이 가지는 고유한 가치가 뭐라고 생각하세요?</p>
+<p>남들이 보통의 복지 기관에서 보지 못하는 부분을 잘 파악하고 있다는 거예요. 생각지도 못한 정말 함께 해야 할 부분들을 세심하게 잘 보고, 잘 연결하는 그 부분이 다른 것 같아요. 특히 국장님 이하 실무자 분들의 창의력이 탁월해요. 매년 후원의 밤 같은 행사 제목이나 주제를 보면, 시대적인 흐름을 굉장히 잘 반영해서 포인트를 잘 잡아요. 볼 때마다 기대가 되죠.</p>
+<p class="q">앞으로 법인이 어떻게 됐으면 좋겠다는 바람이 있으시나요?</p>
+<p>더 커질 거라는 기대는 당연히 해요. 국장님도 22년, 소장님도 24년, 대부분 기초부터 오래 함께하신 분들이 이어오고 계시니까요. 개인적으로는 범위를 넓히는 것도 중요하지만, 본연이 가지고 있는 부분은 변함없이 실속 있게 유지하면서 갔으면 좋겠다는 바람이 있어요.</p>`
+  },
+  {
+    num: 'No. 06',
+    role: '커뮤니티와 경제 사무국장',
+    title: '암묵지가 가장 큰 자산이에요',
+    name: '김언호',
+    date: '2026년 4월 9일',
+    excerpt: "암묵지예요. 주거 빈곤·쪽방·노숙 영역에서 쌓아온 노하우가 다른 곳과 확실히 차이가 나거든요. 그 암묵지가 가장 큰 자산이에요.",
+    body: `<p class="section-title">김언호 사무국장 인터뷰: 개발원과의 인연 및 사회적 경제 회고</p>
+<p class="q">지금 소속 기관이 어떻게 만들어졌는지 간단히 말씀해 주시겠어요?</p>
+<p>대구사회연구소라는 곳에서 사회적 기업 창업 지원 사업과 마을기업 지원 사업을 위탁 운영하고 있었어요. 그런데 대구사회연구소는 민간 연구자들이 모여 연구를 주로 하는 곳이다 보니, 이 사업들은 별도 기관으로 분리하자는 논의가 나왔죠. 그 안에 있던 직원들과 소장님들이 나와서 2011년 말에 법인을 만들고, 2012년에 자연스럽게 옮겨온 거예요.</p>
+<p class="note">※ 이력: 대구참여연대(28~29세부터 약 10년) → 시정혁신기획단(시청 주 20시간 계약직, 2008~) → 행정학 대학원(석사) → 대구사회연구소 사무국장 → 커뮤니티와경제 사무국장</p>
+<p class="q">개발원과는 어떻게 처음 인연이 됐나요?</p>
+<p>시청 시정혁신기획단에 있을 때였어요. 2008~2009년쯤인데, 주민 참여·시정 혁신 과제를 발굴하려고 분야별로 시민단체·NGO와 간담회를 열었거든요. 그때 주거복지 분야 간담회에 쪽방상담소 등 몇 군데를 초대했고, 제가 직접 평리동 사무실로 찾아가기도 했어요. 그때 윤승걸 본부장님, 장민철 소장님을 처음 만났고, 그게 첫 인연이었죠.</p>
+<p>그 전에는 이름은 들어봤어요. '자원봉사능력개발원'—이름이 독특하다 싶었고, 통상적인 사회복지법인 이름과는 다르다는 인상이었어요. 자원봉사(volunteer) 하는 곳인가 싶었고요.</p>
+<p class="q">참여연대 시절에는 개발원을 잘 몰랐다고 하셨는데, 왜 그랬을까요?</p>
+<p>당시 참여연대는 상근자가 10명 정도로 많았고, 팀이 꽤 구분돼 있었어요. 저는 주로 예산 감시·의정 감시 파트를 맡았거든요. 사회복지 파트와는 결이 달랐죠. 한재흥 목사님은 이름은 알았는데, 사랑의 연탄 활동으로 주로 인식했고, 개발원 자체는 따로 인식하지 못했어요. 당시 NGO 시민운동과는 결이 조금 달라 보였으니까요.</p>
+<p class="note">※ 당시 참여연대 사회복지 파트 담당이었던 강금수 처장·김영숙 선생 등이 기초법 제정·지역 조례 제정 관련 설문조사 등을 개발원과 협력했던 것으로 확인됨.</p>
+<p class="q">시청 시정혁신기획단은 어떤 자리였나요?</p>
+<p>시민사회에서 요구하는 주민 참여·시정 혁신 과제를 발굴해 정책에 반영시키는 역할을 하는 조직이었어요. 단장은 박세정 교수(참여연대 지방자치센터장 출신)였고, 시장과 공동단장 체제였어요. 위원들은 주로 NGO 출신이었죠. 대구 시민단체의 주민 참여 제도 요구를 받아들인 결과로 만들어진 조직이에요.</p>
+<p>주 20시간 계약직이다 보니 깊이 있는 것까지 알 수는 없었지만, 큰 조직의 시스템·내부 정치를 간접 경험한 게 흥미로웠어요. 당시 주민 참여 조례, 주민감사 청구, 시민 옴부즈만 제도 도입 등이 이루어졌고요.</p>
+<p class="q">마을기업·사회적 경제 쪽으로 관심을 갖게 된 계기는 무엇인가요?</p>
+<p>시민운동은 어떻게 보면 경제 생활과 분리된 정치적 관심 영역이거든요. 특별한 사건이나 정치적 의사 표현 때 모이는 방식이죠. 반면 사회적 경제는 주민들이 일상의 경제 활동 자체를 함께 하면서 공동체를 개선하는 거예요. 더 생활의 세계로 내려오는 방식이죠. 사회적 기업이 2007~2009년쯤 초창기였고, 마을기업도 막 시작하던 때였어요. 마침 대구사회연구소에서 마을기업 지원 사업을 처음 시작하던 해였고, 관심사와 맞아 그쪽으로 자연스럽게 가게 됐어요.</p>
+<p class="q">복지의 보편적 권리와 사회적 경제의 수익성이 충돌할 때 어떻게 균형을 잡아야 할까요?</p>
+<p>사회적 경제는 '경제인데 사회적인 것을 추구하는 것'이에요. 수익성이 안 나서 안 되면 어쩔 수 없지만, 돈을 벌기 위해 사회적 문제를 겪는 사람들을 놓쳐버리면 그냥 일반 시장 기업이 되는 거죠. 그렇게 되면 차라리 비즈니스 안 하고 NGO처럼 움직이면 돼요. 가치를 계속 추구해야 하니까요.</p>
+<p>가치가 손에 잡히지 않아 잊고 살 수 있지만, 그 가치를 필요로 하는 당사자—사회적 문제를 겪는 사람들—는 늘 있거든요. 그분들이 있기 때문에 이 영역이 존재하는 거고, 그분들을 늘 보는 게 결국 가치를 놓치지 않는 방법이에요.</p>
+<p class="note">※ '사회주의 아니냐'는 오해는 초창기에 들었고, 지금도 '보조금 받는 단체'로 보는 시각이 남아 있다고 했다. 하지만 정부 지원을 제일 많이 받는 건 대기업이라는 점을 들며, '지원'의 개념 자체를 다르게 볼 필요가 있다고 강조.</p>
+<p class="q">개발원이 '자원봉사 법인'에서 '주거복지 기관'으로 인식되고 있는 것, 어떻게 보세요?</p>
+<p>동의해요. 법인명은 '자원봉사능력개발원'이지만, 대구쪽방상담소·달서주거복지센터 등 시설명을 나열해 보면 이미 주거복지 정체성으로 인식되고 있죠. 저도 그렇게 인식하고 있고, 그게 오히려 맞다고 생각해요. 내부 구성원들도 쪽방·노숙·주거복지로 스스로 정체성을 갖고 있을 거예요.</p>
+<p>법인명을 바꾸는 것도 생각해볼 수 있지만, 위탁·보조 사업이 많다 보니 명칭 변경 시 거쳐야 할 절차가 어마어마해요. 관습 헌법이 더 무서운 거예요—이미 지역사회 안팎에서 주거복지 기관으로 굳어져 있으니까요.</p>
+<p class="note">※ 윤승걸 본부장은 '개발원은 쪽방만의 개발원이 아니다'라는 인식을 확고하게 가지고 있다고 함. 지역사회 소외계층 전반을 아우르는 기관으로 보는 시각.</p>
+<p class="q">법인이 가지고 있는 고유한 가치가 뭐라고 생각하세요?</p>
+<p>암묵지예요. 설명하거나 문서화하기 어렵지만, 주거 빈곤·쪽방·노숙 영역에서 쌓아온 노하우와 역량이 사업 제안·실행·개발 과정에서 다른 곳과 확실히 차이가 나거든요. 그 암묵지가 가장 큰 자산이에요.</p>
+<p>이 노하우를 기반으로 다른 영역으로도 확장할 수 있을 거예요. 북한이주민센터처럼 한 덩어리가 나가서 자기 영역을 갖고 독립하듯, 새로운 관심사와 영역이 생겨날 거라고 봐요. 그러려면 지금 문제를 겪는 당사자를 늘 들여다보고, 주변의 사회적 변화를 의식하면서 '우리가 무엇을 어떻게 해야 하는지'를 끊임없이 찾는 게 중요해요.</p>
+<p class="q">'쪽방상담소가 잘 되고 있는 게 오히려 제대로 못 해서'라는 비판도 있더라는 얘기를 하셨는데, 어떻게 생각하세요?</p>
+<p>그런 비판을 뒤집어 놓고 보면, 뭔가가 잘 되기 위해서는 잘 안 되는 상황에서 누군가가 계속 요구하고 주장하고 도전해야 그게 잘 되는 상황으로 넘어가는 거죠. 처음부터 가만히 있는데 제도가 도입되는 건 없잖아요. 국민연금·사회보장 제도도 노동자들의 요구와 타협의 결과로 들어온 거예요. 모든 제도가 그렇게 들어오는 거고, 사회복지도 마찬가지예요. 칭얼대야 젖을 주는 거고, 욕구가 있으면 드러내야 해요.</p>`
+  },
+  {
+    num: 'No. 07',
+    role: '북한이탈주민 · 현 중국어 교사',
+    title: '거기서 느낀 게 수용된다는 느낌이었어요',
+    name: '강지윤',
+    date: '2026년 4월 15일',
+    excerpt: "2004년 하나원 졸업 후 홀로 대구에 정착했다. 느낌적으로 나쁘지 않다 싶어서 따라갔어요. 거기서 느낀 게 수용된다는 느낌이었어요.",
+    body: `<p class="section-title">강지윤 인터뷰: 이주민센터와의 인연 및 23년 회고</p>
+<p class="q">대구에 처음 정착하셨을 때 어떠셨나요?</p>
+<p>2004년에 왔어요. 하나원을 졸업하고 형사가 저를 범물동 임대 아파트에 두고 갔는데 아무도 없는 거예요. 청소 도구 사서 청소하고, 경비 아저씨한테 길 물어서 시내 나가 옷도 사고 그랬어요. 스마트폰도 없고 컴퓨터도 없던 때였으니까요. 그러던 어느 날 모르는 두 분이 찾아와서 무작정 도와준다고 하더라고요. 하나원에서 제일 많이 가르쳐 주는 게 '도와줄게 하는 사람 조심하라'였거든요. 그래서 경계했죠. 근데 느낌적으로 나쁘지 않다 싶어서 따라갔어요.</p>
+<p>따라간 곳이 원대동 사무실이었어요. 처음에는 자원봉사능력개발원인지 이주민센터인지도 몰랐어요. 그냥 가보니까 책상이 두 줄로 있는데 한 줄은 쪽방, 한 줄은 북한이라고 하더라고요. 되게 허름한 사무실이었는데, 저는 그때 야망이 있어서 '나는 10년 안에 롯데캐슬을 살 거야'라고 생각하고 온 사람인데 이런 데도 사람이 일을 하는구나 싶어서 좀 놀랐죠.</p>
+<p class="note">※ 처음 찾아온 두 분은 조대성 선생님과 김희정 선생님이었음. 범물동에서 원대동까지 버스를 갈아타며 1시간 넘게 걸리는 거리를 자주 오갔다고 함.</p>
+<p class="q">처음 허영철 소장님을 만나셨을 때 기억이 나시나요?</p>
+<p>센터 사람들하고 몇 번 만난 후에 사무실을 갔는데, 영철이 삼촌(허영철 소장님)이 들어오더니 '니가 말로만 듣던 성실이가?' 이러면서 보자마자 반말을 하는 거예요. 몇 살이야 하길래 23살이라 했더니 닭띠라고, 저희 삼촌도 닭띠인데 삼촌 할까요 했더니 그래 하더라고요. 그때부터 지금까지 삼촌이라고 불러요.</p>
+<p>그때부터 모르는 게 있거나 도움이 필요하면 원대동에 가서 하루 종일 옆에 있었어요. 제가 말이 많으니까 어릴 때 살았던 이야기, 놀이들을 썰 풀어주면 박수를 쳐주고 반응이 너무 좋은 거예요. 거기서 느낀 게 수용된다는 느낌이었어요. 다른 데서는 보는 사람마다 '왜 왔냐, 어떻게 왔냐' 그 과정이 첫 질문이었거든요. 근데 조재희 소장님, 장민철 소장님, 허영철 소장님은 그런 걸 묻지 않았어요. 그냥 왔구나, 필요한 게 있냐, 도와줄까—그렇게 일상적으로 대해줬어요. 그래서 마음의 장벽이 낮아져서 자꾸 찾아갔던 것 같아요.</p>
+<p class="q">쪽방 봉사를 처음 나가셨을 때 어떠셨나요?</p>
+<p>어릴 때 사회주의 교육의 핵심이 '자본주의의 단점은 불평등, 거지가 많다'였거든요. 근데 막상 북에서도 17살 무렵 식량 공급이 끊기면서 꽃제비들이 생기는 걸 봤어요. 그래서 내가 받은 교육하고 뭔가 다른데 싶었죠. 그렇게 거슬러 거슬러 오다가 쪽방을 딱 본 순간, 어릴 때 받았던 교육이 이건가라고 스스로 매칭을 시켜버렸어요. 충격이었어요. 근데 동시에 이 사람들이 왜 이분들을 도와주지라는 것도 질문이었고요.</p>
+<p>동대구역에서 무료 급식도 같이 했거든요. 그때 옷은 멀쩡하게 입은 사람들이 왜 밥을 얻어먹지, 일하면 80만 원 받는데 왜 그러지. 저도 화장품 매장에서 80만 원 받으면서 아침 9시부터 밤 10시 반까지 일하던 시절이었거든요. 모든 게 저한테는 다 질문이었어요.</p>
+<p class="q">대학 진학은 어떻게 결심하셨나요?</p>
+<p>화장품 매장 언니들이 다 전문대 나왔는데 목표가 백화점 취업이었어요. 그때 '나는 그렇게 아닌데' 싶었고, 80만 원으로 언제 롯데캐슬을 사나 싶기도 했죠. 어느 날 중국 손님이 '한국인 중에 중국어를 이렇게 잘하는 사람을 못 봤다'고 하는 거예요. 그 순간 내가 잘하는 게 있구나, 가능하겠다 싶었어요.</p>
+<p>영철이 삼촌이 중어중문이 아니라 중국학과를 가라고 코칭해줬고, 재희 언니(조재희 소장님)가 입학 서류와 과정을 다 도와줬어요. 계명대 중국학과로 4년 다녔어요. 범물동에서 성서까지 569번 버스 타고 1시간 반씩 다녔죠. 2학년 때까지는 2호선이 안 뚫렸을 때라 갈아타기도 했어요.</p>
+<p class="q">한재흥 목사님과는 어떤 기억이 있으세요?</p>
+<p>한 목사님이 저를 양딸로 삼겠다면서 호적에 올리겠다고 하셨어요. 무턱대고 사모님을 모시고 와서 식사 자리를 만들어서는 그런 말씀을 하셨는데, 사모님이 딱 '왜 그걸 당신이 일방적으로 결정하느냐, 부모님이 북에 살아계시지 않느냐'고 하시는 거예요. 그 순간 이런 멋진 여성도 있구나 싶어서 되게 존경스러웠어요. 한 목사님은 제가 어릴 때 그냥 좋아하라 하면 좋은 줄 알고 하던 시절이라 제 판단이 명료하지 않을 때였는데, 사모님이 딱 그렇게 말씀하시니 저도 느낌적으로 이게 아닌 것 같은데 싶었거든요.</p>
+<p>한 목사님이랑 경북·대구 학교들을 돌며 강연도 많이 다녔어요. 그분의 철학을 가까이서 들으면서 이해하게 됐죠. 인간에 대해서는 되게 공감하고 감사했지만, 사상과 철학에 대해서는 저랑 결이 달랐어요. 저는 그렇게 사회주의적이지는 않거든요. 그래도 개인적으로는 인간적으로 되게 좋아해요. 잘 지내셨으면 좋겠어요.</p>
+<p class="note">※ 한재흥 목사님은 현재 라오스에서 선교 활동 중. 강지윤 씨의 결혼식 혼주는 여자 목사님(달구벌 공동체)과 신경목 선생님이었음. 신경목 선생님이 아버지 대신, 여자 목사님이 어머니 대신 입장해 주셨다고 함.</p>
+<p class="q">처음 개발원에서 만난 여성들에 대한 인상이 특별하셨다고요?</p>
+<p>제가 어릴 때 생각한 남조선 여성상이 있었어요. 89년도에 판문점을 넘어온 임수경 씨 인상이 엄청 강했거든요. 쌍꺼풀 없는 찢어진 눈에 단발 머리, 흰 티셔츠 청바지 입고 강단 있게 서 있는 모습이요. 그런데 원대동 사무실에 가보니 조재희 소장님이 흡연을 하고 계신 거예요. 거기서 깜짝 놀란 거죠. 이게 남조선의 여성상인가?</p>
+<p>그리고 얼마 안 있어서 조 소장님이 출산을 하셨는데, 술자리에서 아이한테 모유 수유를 하고 뒤로는 술을 마시는 거예요. 남조선 여자들 대단하다. 그게 저한테 첫 남조선 여성들의 강렬한 인상이었어요. 자유란 게 이런 것인가 싶기도 하고, 제가 어릴 때 받았던 '여자는 바느질 잘해야 된다' 교육이랑 너무 달라서 충격이기도 했지만 신선하기도 했어요.</p>
+<p class="q">개발원과 이주민센터가 선생님 삶에 어떤 영향을 미쳤나요?</p>
+<p>처음에 자본주의 사회를 선택해서 온 거라 돈이 전부인 사회라고 생각했어요. 근데 이주민센터에서 만난 사람들은 제가 생각하던 자본주의 사람들이 아닌 거예요. 왜 이런 사람들이 있을까 궁금했고, 그러면서 진짜 산다는 게 뭔가를 생각해 보게 됐어요. 계속 같이 있다 보니까 물이 들었어요. 20년 넘게 지나온 지금 도착지를 보면 제가 사회복지 일선에 있지는 않지만, 사회 저변에 있는 사람들이 좀 괜찮아질 수 있다를 공감하게 됐어요.</p>
+<p>그리고 나도 언젠가 갚아야 되는 어떤 게 있다는 생각을 계속 해요. 꼭 센터에 갚아야 되는 건 아니지만, 저만의 방식으로 내어놓을 준비를 순간순간 하면서 살아야 된다. 그게 자원봉사센터도, 이주민센터도, 저를 스쳐간 모든 사람들도, 나아가서는 이 사회에도 그렇고, 하루하루 평범하게 잘 살아가면서 갚아야 되는 것들이다 라고 생각하고 있어요.</p>
+<p>허영철 소장님이 쪽방 어르신이 대장이 안 좋으셔서 쓰러지셨을 때 그 상태로 들쳐 업고 병원을 뛰어갔다는 얘기를 들었어요. 그거를 들으면서 모든 사회복지사가 그런 건 아니에요. 그건 허영철이어서 할 수 있는 거예요. 성질은 좀 더러운데 아주 따뜻한 사람이에요. 그분이 제 인생의 턴을 만들어줬죠.</p>
+<p class="q">23년 전 처음 만났던 개발원과 지금의 개발원, 어떻게 보세요?</p>
+<p>달라졌는지는 모르겠어요. 제가 원대동 시절밖에 안 봤으니까요. 근데 그 사람들이 여전히 그 자리에 있다는 게 저한테는 따뜻함이에요. 장민철 소장님도 있고, 윤승걸 본부장님도 있고. 얼마 전에 장례식장에서 뵀는데 그 사람들이 그냥 그 자리에 있는 것 자체가 되게 따뜻했어요.</p>
+<p>형태는 바뀔 수 있겠지만, 그분들이 초창기에 시작했던 그 가치—저는 인간애라고 생각해요. 인간애가 없으면 쪽방이든 북한이든 처음 온 이방인에게도 그렇게 하기 어렵거든요. 처음에 운 좋게 만난 거고, 그때 모든 정성과 에너지를 쏟고 있을 때 저를 만난 거예요. 스킬이 늘면 노련해지고 에너지를 효율적으로 쓰게 되는 건 자연스러운 일이에요. 형식이 좀 변했을 수 있겠지만 본질은 안 변했을 거다라는 믿음이 있어요.</p>
+<p class="q">23년이 지난 지금, 앞으로는 어떻게 살고 싶으세요?</p>
+<p>롯데캐슬을 살 수 있게 해줄게 하는 사람이 손을 잡았다면 어떤 방향으로 갔을지 모르겠어요. 근데 다행히 사람에 대한 사랑을 가진 분들이 손을 내밀어줘서, 이 사회에서 이렇게 살아갈 수도 있구나를 알게 됐어요. 나의 취약점이나 결점이 나만의 문제가 아니고 누구나 그럴 수 있다라는 관점으로 보게 돼서, 지금은 되게 편안해요.</p>
+<p>구체적 계획파는 아닌데, 50 전에는 제가 가진 경험들이 어디 잘 쓰여지면 좋겠다 하는 생각이 있어요. 제가 살고 싶은 방향을 찾고 있다는 진심이 그분들한테 전해져서 지금까지 이렇게 이어지는 게 아닐까 싶어요. 두만강도 건넜는데 뭐, 저 자신이 꽤 괜찮게 잘 살고 있다고 매일매일 얘기하면서 살고 있어요.</p>
+<p class="note">※ 현재 비평준화 고등학교에서 중국어 계약직 교사로 근무 중. 아이는 중학교 2학년. 달구벌 공동체 교회를 통해 조재희 소장, 허영철 소장과 지금도 가족 같은 관계를 유지하고 있음.</p>`
+  },
+  {
+    num: 'No. 08',
+    role: '내과 원장 · 전 이사장',
+    title: '좋은 사람들이 부대끼고 만나는 일들이 재미있어요',
+    name: '신경목',
+    date: '2026년 4월 15일',
+    excerpt: "뭘 크게 도움 준 건 없지만, 그냥 같이 있는 거잖아요. 좋은 사람들이고, 서로 다른 사람들이 부대끼고 만나는 일들이 재미있어요.",
+    body: `<p class="section-title">신경목 원장 인터뷰: 북한이주민센터·개발원과의 인연</p>
+<p class="q">처음 개발원과 인연을 맺게 된 경위가 어떻게 되세요?</p>
+<p>추호식 원장님이 소개해 주셨어요. 그분이 봉사팀에 있었는데, 허영철 소장이 거기서 뭔가 실질적으로 일을 하고 있더라고 하면서 한번 가보자고 했어요. 처음에는 그냥 만나러 가도 바로 될 게 아니니까, 술자리에서 한 번, 또 만나고, 그러다 보니까 매주 한두 번씩 행사들이 있었어요. 축구장도 가고, 하나원에서 3주에 한 번씩 나오는 탈북 주민 이사팀 봉사도 따라다니고. 임대 아파트에 입주 전날 청소해 두고 가는 봉사도 같이 했죠.</p>
+<p>그렇게 따라다니다 보니 운영위원회가 꾸려질 때 참여하게 됐어요. 처음에는 남기정 의원이 운영위원장을 맡았는데, 선거 출마하시면서 내려놓게 되면서 제가 넘어오게 됐죠.</p>
+<p class="note">※ 2004년 본격 참여 시작. 초창기 이사팀 봉사에는 별가사 등 자원봉사 팀들이 함께했음. 조재희 선생님·학생들도 함께 청소 봉사에 참여했다고 함.</p>
+<p class="q">운영위원장으로서 어떤 활동을 하셨나요?</p>
+<p>북한이주민센터 운영위원장을 하면서 개발원 분들을 같이 보게 됐어요. 처음에는 탈북자 지원에만 집중했는데, 직원들이 로테이션을 하면서 자연스럽게 여러 부설기관을 다 알게 됐죠. 저녁에도 자주 모이고, 행사 때 보고, 회의도 많이 했어요. 그때 법인 자체가 꽤 힘들었어요. 재정 문제도 있고, 법적 근거도 부족하고. 근데 그 안에서도 직원들이 뭔가를 만들어내는 게 존경스러웠어요.</p>
+<p>2008~2009년 사이에 북한이주민센터가 법인에서 분리됐어요. 통일부 관할 문제, 법인 내부 사정 등 여러 이유가 있었죠. 분리될 때 이사장님이 저한테 양쪽에 다 이사를 달고 있으라고 하셨어요. 언젠가 이 사람들이 다시 같이 하지 않겠냐는 생각에서요. 비슷한 가치를 가진 사람들이고, 계속 같이 뭔가를 해온 사람들이니까요.</p>
+<p class="note">※ 북한이주민센터 초대 이사장은 김병준 이사장(약 10년 역임). 이후 김영달 이사장 취임 시 경북 하나센터도 함께 설립. 조재희 선생님도 로테이션으로 경북 담당을 맡은 시기가 있었음.</p>
+<p class="q">인의협(인도주의실천의사협의회)에는 어떻게 참여하게 되셨나요?</p>
+<p>추호식 원장님 소개도 있었지만, 우리 법인하고 인의협이 함께 하는 일이 되게 많았어요. 진료도 나가고, 무슨 일이 있으면 발 벗고 쫓아와 도와주고. 법인에서 잘 모르는 분야를 인의협 선생님들이 채워주고, 인의협 쪽에서는 우리가 하는 현장 활동을 보면서 시너지가 났어요. 동대구역 앞에서 오랫동안 진료를 함께 했죠.</p>
+<p>처음엔 그냥 같이 활동만 했는데, 어느 날 밤 회의 자리에서 김진국 선생님이 갑자기 엄숙하게 '인의협 들어오셔야 됩니다' 하시는 거예요. 아무 말도 못 하고 들어갔어요. 그러다 나간 지 2년도 안 됐을 때 노태맹 회장 임기에 대표를 맡게 됐는데, 그날 밤 술 먹고 기억도 날랑말랑한데 한다고 했다더라고요. 한다 했으면 해야지 싶어서 했어요.</p>
+<p class="q">오랫동안 지켜보신 법인의 특징이 뭐라고 생각하세요?</p>
+<p>남들 안 하는 걸 찾을 수밖에 없었어요. 맨날 고 일만 하면 살아남기 어려우니까, 연말마다 직원들이 눈에 불을 켜고 프러포절을 왕창 내는 거예요. 권력도 없고 어디서 나오는 것도 없이 맨땅에 시작해서 꾸려나가는 게 힘들긴 해도 멋지기도 하고 존경스럽기도 해요. 이사장이 만드는 게 아니라, 직원들이 모여서 뭔가 뜨면 만들어라는 전통이 있었거든요.</p>
+<p>다른 프로그램 없는 걸 새로 만들어낸 것들이 되게 많아요. 없으니까 만들어야 되고, 그러면서 노하우가 쌓이고. 그게 나중에 자산이 됐죠. 직원들이 어리지만 참 존경스러운 점이 많았어요. 힘들 때 같이 모여서 온전히 만들어내는 그런 것들이요.</p>
+<p>로테이션도 그렇게 생각해요. 어렵고 힘든 데만 계속 있으면 누구는 계속 어려운 것만 하게 되니까, 여기도 해보고 저기도 해보면서 서로 입장을 알게 되고 업무 능력도 올라가고. 지금은 전문 파트가 좀 갖춰져 있지만, 그때는 베이스가 많이 흔들렸기 때문에 여러 일을 같이 하는 게 더 낫기도 했어요.</p>
+<p class="q">쪽방을 처음 가보셨을 때 어떠셨나요?</p>
+<p>어릴 때 칠성동 할머니 집이 한 방에 여럿이 모여 자는 환경이었어요. 그때는 다들 그랬으니까 그게 특별한 게 아니었죠. 쪽방은 그것과는 달라요. 공간 문제만이 아니라, 거기 계신 분들한테는 더 크게 뭔가를 개량해 나가려는 정신적 에너지가 많이 필요한 공간이에요. 가보면 덥겠구나, 힘들겠구나 싶기도 하지만, 그분들 한 명 한 명이 다 뭔가를 갖고 있을 텐데 그게 전반적으로 발현되기 어려운 상황인 거죠. 그런 희망을 들어주고 찾아주는 일이 더 힘이 될 것 같아요.</p>
+<p class="q">등 떠밀려 시작하셨다고 하셨는데, 그래도 오래 함께하신 이유가 있을까요?</p>
+<p>안 했겠지요, 동기가 없었으면. 슬그머니 도망갈 수도 있었는데, 지금까지 도망 안 가고 있어요. 뭘 크게 도움 준 건 없지만, 그냥 같이 있는 거잖아요. 좋은 사람들이고, 서로 다른 사람들이 부대끼고 만나는 일들이 재미있어요. 기자한테도 그렇게 얘기했거든요. 여기 와봐요. 보시면 알아요. 그게 뭐 다른 걸로 설명할 수가 없어요.</p>
+<p>이쪽이나 저쪽이나 다른 데 없는 걸 새로 만들어낸 것들이 많아요. 그 노하우들이 이제는 많이 쌓여 있고, 그게 공감이 되고. 그래서 계속 함께하게 되는 것 같아요.</p>`
+  }
+];
+
+// ── CARDS ──
+const grid = document.getElementById('cardGrid');
+data.forEach((d, i) => {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.animationDelay = `${i * 0.07}s`;
+  card.innerHTML = `
+    <p class="card-num">${d.num}</p>
+    <p class="card-role">${d.role}</p>
+    <h3 class="card-name-big">${d.name}</h3>
+    <p class="card-title">${d.title}</p>
+    <p class="card-excerpt">${d.excerpt}</p>
+    <button class="card-read" onclick="event.stopPropagation(); openModal(${i})">읽기 <span class="arrow">→</span></button>
+  `;
+  card.onclick = () => openModal(i);
+  grid.appendChild(card);
+});
+
+// ── SCROLL REVEAL ──
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.card').forEach(el => io.observe(el));
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ── MODAL ──
+function openModal(i) {
+  const d = data[i];
+  document.getElementById('m-role').textContent = d.role + ' · ' + d.num;
+  document.getElementById('m-name').textContent = d.name;
+  document.getElementById('m-title-sub').textContent = d.title;
+  document.getElementById('m-date').textContent = d.date;
+  document.getElementById('m-body').innerHTML = d.body;
+  const overlay = document.getElementById('overlay');
+  const modal = overlay.querySelector('.modal');
+  modal.style.transform = '';
+  modal.style.opacity = '';
+  overlay.style.opacity = '';
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal() {
+  document.body.style.overflow = '';
+  animateModalOut();
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+
+// ── PREMIUM INTERACTIONS ──
+const root = document.documentElement;
+const hero = document.querySelector('.hero');
+const heroTitle = document.querySelector('.hero-title');
+const heroDesc = document.querySelector('.hero-bottom');
+const heroDeco = document.querySelector('.hero-deco');
+
+window.addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  const progress = max > 0 ? (window.scrollY / max) * 100 : 0;
+  root.style.setProperty('--scroll-progress', progress + '%');
+
+  const y = Math.min(window.scrollY, 320);
+  if (heroTitle) heroTitle.style.transform = `translateY(${y * 0.06}px)`;
+  if (heroDesc) heroDesc.style.transform = `translateY(${y * 0.035}px)`;
+  if (heroDeco) heroDeco.style.transform = `translateY(calc(-50% + ${y * 0.05}px))`;
+}, { passive: true });
+
+if (hero) {
+  hero.addEventListener('mousemove', (e) => {
+    const r = hero.getBoundingClientRect();
+    const x = (e.clientX - r.left) / r.width;
+    const y = (e.clientY - r.top) / r.height;
+    hero.style.setProperty('--hero-x', `${x * 100}%`);
+    hero.style.setProperty('--hero-y', `${y * 100}%`);
+    if (heroTitle) heroTitle.style.transform = `translate3d(${(x - 0.5) * 10}px, ${(y - 0.5) * 10}px, 0)`;
+    if (heroDesc) heroDesc.style.transform = `translate3d(${(x - 0.5) * 6}px, ${(y - 0.5) * 6}px, 0)`;
+    if (heroDeco) heroDeco.style.transform = `translate3d(${(x - 0.5) * 16}px, calc(-50% + ${(y - 0.5) * 10}px), 0)`;
+  });
+
+  hero.addEventListener('mouseleave', () => {
+    if (heroTitle) heroTitle.style.transform = '';
+    if (heroDesc) heroDesc.style.transform = '';
+    if (heroDeco) heroDeco.style.transform = 'translateY(-50%)';
+  });
+}
+
+document.querySelectorAll('.card').forEach(card => {
+  card.addEventListener('mousemove', (e) => {
+    const r = card.getBoundingClientRect();
+    const px = ((e.clientX - r.left) / r.width) * 100;
+    const py = ((e.clientY - r.top) / r.height) * 100;
+    const rx = ((e.clientY - r.top) / r.height - 0.5) * -5;
+    const ry = ((e.clientX - r.left) / r.width - 0.5) * 7;
+    card.style.setProperty('--mx', `${px}%`);
+    card.style.setProperty('--my', `${py}%`);
+    card.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-10px) scale(1.012)`;
+  });
+
+  card.addEventListener('mouseleave', () => {
+    card.style.transform = '';
+  });
+});
+
+const overlay = document.getElementById('overlay');
+const modal = overlay.querySelector('.modal');
+
+function animateModalOut() {
+  modal.style.transform = 'translateY(20px) scale(.985)';
+  modal.style.opacity = '0';
+  overlay.style.opacity = '0';
+  setTimeout(() => {
+    overlay.classList.remove('open');
+    modal.style.transform = '';
+    modal.style.opacity = '';
+    overlay.style.opacity = '';
+  }, 220);
+}
+
+
+// ── APPLE-LIKE INTERACTION EFFECTS ──
+(function(){
+  const root = document.documentElement;
+  const hero = document.querySelector('.hero');
+  const cards = document.querySelectorAll('.card');
+
+  const updateScrollEffects = () => {
+    const y = window.scrollY || window.pageYOffset;
+    const heroHeight = hero ? hero.offsetHeight : window.innerHeight;
+    const progress = Math.max(0, Math.min(1, y / Math.max(heroHeight * 0.9, 1)));
+
+    root.style.setProperty('--hero-shift', `${Math.min(y * 0.16, 42)}px`);
+    root.style.setProperty('--hero-opacity', `${1 - progress * 0.16}`);
+  };
+
+  updateScrollEffects();
+  window.addEventListener('scroll', updateScrollEffects, { passive: true });
+
+  cards.forEach((card) => {
+    const reset = () => {
+      card.style.setProperty('--rx', '0deg');
+      card.style.setProperty('--ry', '0deg');
+      card.style.setProperty('--mx', '50%');
+      card.style.setProperty('--my', '50%');
+      card.style.setProperty('--card-scale', '1');
+    };
+
+    reset();
+
+    card.addEventListener('mousemove', (e) => {
+      if (window.innerWidth < 900) return;
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+
+      const ry = (px - 0.5) * 6;
+      const rx = (0.5 - py) * 5;
+
+      card.style.setProperty('--rx', `${rx}deg`);
+      card.style.setProperty('--ry', `${ry}deg`);
+      card.style.setProperty('--mx', `${px * 100}%`);
+      card.style.setProperty('--my', `${py * 100}%`);
+      card.style.setProperty('--card-scale', '1.003');
+    });
+
+    card.addEventListener('mouseleave', reset);
+    card.addEventListener('blur', reset, true);
+  });
+
+  document.querySelectorAll('a, button').forEach((el) => {
+    el.addEventListener('mousedown', () => {
+      el.style.transform = (el.classList.contains('hero-cta')) ? 'translateY(1px) scale(0.985)' : 'scale(0.985)';
+    });
+    const release = () => { el.style.transform = ''; };
+    el.addEventListener('mouseup', release);
+    el.addEventListener('mouseleave', release);
+  });
+})();
+
+
+function openModal(index){
+  showInterviewByIndex(index);
+}
+
+// ── BOOK READER HELPERS ──
+let currentInterviewIndex = -1;
+
+function updateReaderNavigation() {
+  const total = data.length;
+  const pageEl = document.getElementById('readerPageNo');
+  const totalEl = document.getElementById('readerPageTotal');
+  const prevBtn = document.getElementById('prevInterviewBtn');
+  const nextBtn = document.getElementById('nextInterviewBtn');
+
+  if (pageEl) pageEl.textContent = String(currentInterviewIndex + 1).padStart(2, '0');
+  if (totalEl) totalEl.textContent = String(total).padStart(2, '0');
+  if (prevBtn) prevBtn.disabled = currentInterviewIndex <= 0;
+  if (nextBtn) nextBtn.disabled = currentInterviewIndex >= total - 1;
+
+  [prevBtn, nextBtn].forEach((btn) => {
+    if (!btn) return;
+    btn.style.opacity = btn.disabled ? '0.45' : '1';
+    btn.style.cursor = btn.disabled ? 'default' : 'pointer';
+  });
+}
+
+function showInterviewByIndex(index) {
+  if (index < 0 || index >= data.length) return;
+  currentInterviewIndex = index;
+  const item = data[index];
+
+  document.getElementById('m-role').textContent = item.role || '';
+  document.getElementById('m-name').textContent = item.name || '';
+  document.getElementById('m-title-sub').textContent = item.title || '';
+  document.getElementById('m-date').textContent = item.date || '';
+  document.getElementById('m-body').innerHTML = item.body || '';
+
+  const overlay = document.getElementById('overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  const modalBody = document.getElementById('m-body');
+  if (modalBody) modalBody.scrollTop = 0;
+
+  updateReaderNavigation();
+}
+
+function showPrevInterview() {
+  if (currentInterviewIndex > 0) showInterviewByIndex(currentInterviewIndex - 1);
+}
+
+function showNextInterview() {
+  if (currentInterviewIndex < data.length - 1) showInterviewByIndex(currentInterviewIndex + 1);
+}
+
+document.addEventListener('keydown', (e) => {
+  const overlay = document.getElementById('overlay');
+  if (!overlay || !overlay.classList.contains('open')) return;
+
+  if (e.key === 'ArrowLeft') showPrevInterview();
+  if (e.key === 'ArrowRight') showNextInterview();
+});
+
+</script>
+</body>
+</html>
